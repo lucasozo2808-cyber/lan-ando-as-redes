@@ -1,0 +1,2017 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lançando as Redes — Rede Metanoia</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&family=Anton&family=Kalam:ital,wght@1,700&display=swap');
+
+:root{
+  --bg: #0d1024;
+  --bg-panel: #161b38;
+  --bg-panel-2: #1e2447;
+  --accent: #e3a640;
+  --accent-soft: #f0c98a;
+  --accent-glow: rgba(227,166,64,0.28);
+  --text: #f2ede1;
+  --text-muted: #9aa0c4;
+  --border: #2b3260;
+  --success: #8ab692;
+  --danger: #c96a5a;
+  --radius: 14px;
+  --radius-sm: 9px;
+  --shadow-card: 0 14px 34px rgba(3,5,18,0.45), 0 1px 0 rgba(255,255,255,0.03) inset;
+  --shadow-soft: 0 6px 16px rgba(3,5,18,0.35);
+  --ease: cubic-bezier(.22,.8,.32,1);
+}
+
+*{ box-sizing: border-box; }
+
+body{
+  margin:0;
+  min-height:100vh;
+  background:
+    radial-gradient(ellipse 900px 500px at 85% 0%, rgba(227,166,64,0.06), transparent 60%),
+    var(--bg);
+  color: var(--text);
+  font-family: 'Inter', sans-serif;
+  padding: 0 0 80px;
+  -webkit-font-smoothing: antialiased;
+}
+
+.wrap{ max-width: 640px; margin: 0 auto; padding: 0 16px; }
+
+header{
+  text-align:center;
+  margin-bottom: 36px;
+  padding: 56px 20px 40px;
+  background:
+    radial-gradient(ellipse 620px 420px at 18% 88%, rgba(227,166,64,0.55), transparent 65%),
+    radial-gradient(ellipse 900px 600px at 50% -20%, rgba(30,45,90,0.6), transparent 60%),
+    linear-gradient(180deg, #0a0d1e 0%, #10142a 55%, #171225 100%);
+  border-bottom: 1px solid var(--border);
+  position: relative;
+  overflow: hidden;
+}
+
+header .fish{
+  width: 34px; height: 34px;
+  margin: 0 auto 14px;
+  color: var(--accent);
+  opacity: 0.9;
+}
+
+header h1{
+  font-family: 'Anton', sans-serif;
+  font-weight: 400;
+  text-transform: uppercase;
+  line-height: 0.98;
+  margin: 0;
+  letter-spacing: 1px;
+}
+header h1 .line1{
+  display:block;
+  font-size: clamp(38px, 11vw, 64px);
+  color: #f7f4ec;
+  text-shadow: 0 2px 18px rgba(0,0,0,0.35);
+}
+header h1 .line2{
+  display:block;
+  font-size: clamp(38px, 11vw, 64px);
+  color: var(--accent);
+  text-shadow: 0 2px 18px rgba(0,0,0,0.35);
+}
+
+header .network-label{
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  letter-spacing: 3px;
+  font-size: clamp(11px, 2.6vw, 13px);
+  color: var(--accent);
+  margin: 10px 0 0;
+}
+
+header .project-sub{
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  letter-spacing: 1.5px;
+  font-size: clamp(13px, 3vw, 16px);
+  color: #f2ede1;
+  margin: 10px 0 4px;
+}
+
+header .tagline{
+  font-family: 'Kalam', cursive;
+  font-style: italic;
+  font-weight: 700;
+  font-size: clamp(16px, 4vw, 21px);
+  color: var(--accent-soft);
+  margin: 4px 0 22px;
+}
+
+header .rule{
+  width: 64px; height: 1px; background: var(--accent);
+  margin: 0 auto 20px; opacity: 0.5;
+}
+
+header .verse{
+  color: var(--text-muted);
+  font-size: 14px;
+  font-style: italic;
+  line-height: 1.5;
+  max-width: 320px;
+  margin: 0 auto;
+}
+header .verse b{
+  color: var(--accent);
+  font-style: normal;
+  font-weight: 700;
+}
+
+header p.subtitle{
+  color: var(--text-muted);
+  font-size: 14px;
+  margin: 18px 0 0;
+}
+
+@keyframes cardIn{
+  from{ opacity:0; transform: translateY(6px); }
+  to{ opacity:1; transform: translateY(0); }
+}
+
+.card{
+  background: linear-gradient(180deg, var(--bg-panel) 0%, rgba(23,28,56,0.92) 100%);
+  border: 1px solid var(--border);
+  border-top: 2px solid var(--accent);
+  border-radius: var(--radius);
+  padding: 30px 26px;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow-card);
+  animation: cardIn 0.35s var(--ease);
+}
+
+.card h2{
+  font-family:'Fraunces', serif;
+  font-weight: 500;
+  font-size: 21px;
+  margin: 0 0 4px;
+  color: var(--text);
+  letter-spacing: 0.2px;
+}
+
+.card .sub{
+  color: var(--text-muted);
+  font-size: 13.5px;
+  margin: 0 0 20px;
+}
+
+label{
+  display:block;
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+}
+
+input[type=text], input[type=number], input[type=password], select, textarea{
+  width:100%;
+  background: var(--bg-panel-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  color: var(--text);
+  font-family:'Inter',sans-serif;
+  font-size: 15px;
+  outline: none;
+  transition: border-color 0.2s var(--ease), box-shadow 0.2s var(--ease);
+}
+input[type=text]:focus, input[type=number]:focus, input[type=password]:focus, select:focus, textarea:focus{
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+button{
+  font-family:'Inter',sans-serif;
+  font-weight:600;
+  font-size: 14px;
+  border-radius: 999px;
+  padding: 12px 20px;
+  border: 1px solid transparent;
+  cursor:pointer;
+  transition: transform 0.15s var(--ease), background-color 0.2s var(--ease), border-color 0.2s var(--ease), box-shadow 0.2s var(--ease), opacity 0.2s var(--ease);
+}
+button:active{ transform: scale(0.97); }
+
+.btn-primary{ background: linear-gradient(180deg, var(--accent-soft), var(--accent)); color: #1a1508; box-shadow: 0 6px 16px rgba(227,166,64,0.25); }
+.btn-primary:hover{ background: var(--accent-soft); box-shadow: 0 8px 20px rgba(227,166,64,0.35); }
+.btn-primary:disabled{ opacity:0.4; cursor:not-allowed; box-shadow:none; transform:none; }
+
+.btn-ghost{
+  background: transparent; color: var(--text-muted); border: 1px solid var(--border);
+}
+.btn-ghost:hover{ color: var(--text); border-color: var(--accent); background: rgba(227,166,64,0.06); }
+
+.btn-small{ padding: 7px 13px; font-size: 12.5px; }
+
+.row{ display:flex; gap:10px; align-items:center; margin-bottom:10px; }
+.row input{ flex:1; }
+
+.hidden{ display:none !important; }
+
+.target-group{ margin-bottom: 22px; }
+.target-group h3{
+  font-size: 13px; text-transform: none; color: var(--accent-soft);
+  margin: 0 0 10px; font-weight:600;
+}
+
+.add-link{
+  background:none; border:none; color: var(--accent); font-size: 13px;
+  padding: 4px 0; cursor:pointer; font-weight:600;
+  border-radius: 0;
+  transition: color 0.15s var(--ease);
+}
+.add-link:hover{ color: var(--accent-soft); }
+
+nav.tabs{
+  display:flex; gap: 6px; margin-bottom: 20px;
+  overflow-x: auto;
+  padding: 5px;
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  box-shadow: var(--shadow-soft);
+  scrollbar-width: none;
+}
+nav.tabs::-webkit-scrollbar{ display:none; }
+nav.tabs button{
+  background:none; border:none; color: var(--text-muted);
+  padding: 9px 15px; font-size: 13.5px; font-weight:600;
+  border-radius: 999px; white-space:nowrap; flex: none;
+}
+nav.tabs button.active{ color: #1a1508; background: linear-gradient(180deg, var(--accent-soft), var(--accent)); box-shadow: 0 4px 12px rgba(227,166,64,0.3); }
+
+.group-total-box{
+  text-align:center;
+  background: linear-gradient(160deg, var(--bg-panel-2), rgba(227,166,64,0.08));
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 16px 12px 18px;
+  margin-bottom: 18px;
+}
+.group-total-box .lbl{
+  font-size: 11.5px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+.group-total-display{
+  font-family: 'Fraunces', serif;
+  font-size: 28px;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+}
+
+.timer-display{
+  font-family:'Fraunces', serif;
+  font-size: 56px;
+  text-align:center;
+  color: var(--accent-soft);
+  letter-spacing: 1px;
+  margin: 6px 0 20px;
+  font-variant-numeric: tabular-nums;
+}
+
+.timer-controls{ display:flex; gap:10px; justify-content:center; margin-bottom: 8px; }
+
+.divider-text{
+  text-align:center; color: var(--text-muted); font-size: 12.5px;
+  margin: 22px 0 16px; position:relative;
+}
+.divider-text::before, .divider-text::after{
+  content:''; position:absolute; top:50%; width:38%; height:1px; background: var(--border);
+}
+.divider-text::before{ left:0; }
+.divider-text::after{ right:0; }
+
+.manual-row{ display:flex; gap:10px; }
+.manual-row > div{ flex:1; }
+
+.chips{ display:flex; flex-wrap:wrap; gap:8px; margin-top: 10px; }
+.chip{
+  background: var(--bg-panel-2); border:1px solid var(--border);
+  padding: 6px 13px; border-radius: 999px; font-size: 12.5px; color: var(--text-muted);
+  transition: transform 0.15s var(--ease);
+}
+.chip.perdido{ border-color: rgba(201,106,90,0.4); }
+.chip.conquista{ border-color: rgba(227,166,64,0.35); }
+.chip.pessoa{ border-color: rgba(122,150,201,0.4); }
+.chip.is-anon{ font-style: italic; opacity: 0.85; }
+
+.anon-toggle{
+  display:flex; align-items:center; gap:6px; font-size:12px; color: var(--text-muted);
+  white-space:nowrap; cursor:pointer; user-select:none;
+}
+.anon-toggle input{ flex:none; width:auto; margin:0; cursor:pointer; }
+.anon-tag{
+  font-size: 10.5px; color: var(--text-muted); border:1px solid var(--border);
+  border-radius: 3px; padding: 1px 6px; margin-left: 6px; font-style: normal;
+}
+
+.stats-grid{
+  display:grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 18px;
+}
+.stat-box{
+  background: linear-gradient(160deg, var(--bg-panel-2), rgba(255,255,255,0.02));
+  border:1px solid var(--border);
+  border-radius: var(--radius-sm); padding: 16px;
+  box-shadow: var(--shadow-soft);
+}
+.stat-box .num{
+  font-family:'Fraunces', serif; font-size: 26px; color: var(--accent-soft);
+}
+.stat-box .lbl{ font-size: 12px; color: var(--text-muted); margin-top:2px; }
+
+table{ width:100%; border-collapse: collapse; font-size: 14px; }
+th{
+  text-align:left; font-size: 12px; color: var(--text-muted);
+  font-weight:600; padding: 6px 8px; border-bottom: 1px solid var(--border);
+}
+td{ padding: 10px 8px; border-bottom: 1px solid var(--border); }
+tr:last-child td{ border-bottom:none; }
+tbody tr{ transition: background-color 0.15s var(--ease); }
+tbody tr:hover{ background: rgba(227,166,64,0.05); }
+.rank-name{ color: var(--text); }
+.rank-you{ color: var(--accent-soft); font-weight:600; }
+
+.msg{
+  font-size: 13px; padding: 11px 13px; border-radius: var(--radius-sm); margin-top: 10px;
+  animation: cardIn 0.25s var(--ease);
+}
+.msg.ok{ background: rgba(138,182,146,0.12); color: var(--success); border:1px solid rgba(138,182,146,0.3); }
+.msg.err{ background: rgba(201,106,90,0.12); color: var(--danger); border:1px solid rgba(201,106,90,0.3); }
+
+.topbar{
+  display:flex; justify-content:space-between; align-items:center; margin-bottom: 18px;
+}
+.topbar .who{ font-size: 14px; color: var(--text-muted); }
+.topbar .who b{ color: var(--text); }
+
+.loading{ text-align:center; color: var(--text-muted); font-size: 13px; padding: 20px; }
+
+.achv-grid{
+  display:grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 4px;
+}
+.achv-card{
+  background: var(--bg-panel-2); border:1px solid var(--border);
+  border-radius: var(--radius-sm); overflow:hidden;
+  box-shadow: var(--shadow-soft);
+  transition: transform 0.2s var(--ease), box-shadow 0.2s var(--ease);
+}
+.achv-card:hover{ transform: translateY(-2px); box-shadow: 0 10px 24px rgba(3,5,18,0.5); }
+.achv-card img{
+  display:block; width:100%; height: 120px; object-fit: cover;
+}
+.achv-noimg{
+  width:100%; height:120px; display:flex; align-items:center; justify-content:center;
+  font-size: 30px; background: rgba(227,166,64,0.08);
+}
+.achv-body{ padding: 10px 12px; }
+.achv-target{
+  font-size: 13.5px; font-weight:600; color: var(--accent-soft);
+  margin-bottom: 4px; line-height:1.3;
+}
+.achv-caption{
+  font-size: 12.5px; color: var(--text); line-height:1.4; margin-bottom: 6px;
+}
+.achv-meta{ font-size: 11px; color: var(--text-muted); }
+
+@media (max-width: 400px){
+  .achv-grid{ grid-template-columns: 1fr; }
+}
+
+.site-footer{
+  text-align:center;
+  color: var(--text-muted);
+  font-size: 12px;
+  letter-spacing: 0.5px;
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+}
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+</head>
+<body>
+<header>
+  <svg class="fish" viewBox="0 0 64 40" fill="none" stroke="currentColor" stroke-width="1.6">
+    <path d="M4 20c8-14 30-18 42-10-4 4-4 16 0 20-12 8-34 4-42-10z"/>
+    <circle cx="14" cy="17" r="1.6" fill="currentColor" stroke="none"/>
+    <path d="M46 12l10-6-2 14"/>
+    <path d="M4 20c-2 3-3 6-3 6s5-1 8-3"/>
+  </svg>
+  <h1><span class="line1">Lançando</span><span class="line2">as Redes</span></h1>
+  <p class="network-label">REDE METANOIA</p>
+  <p class="project-sub">PROJETO EVANGELISMO 2026</p>
+  <p class="tagline">Trazendo de Volta o que se Perdeu</p>
+  <div class="rule"></div>
+  <p class="verse">"Faze-te ao largo, e lançai as vossas redes para pescar." — <b>Lucas 5:4</b></p>
+  <p class="subtitle">Registre seus alvos e o tempo dedicado à oração por eles</p>
+</header>
+
+<div class="wrap">
+  <div id="app"></div>
+  <footer class="site-footer">Lançando as Redes — Rede Metanoia</footer>
+</div>
+
+<script>
+// ---- Firebase: banco de dados real (Firestore) no lugar do window.storage ----
+// Cada "chave" do app antigo (ex: 'targets:maria_silva', 'prayer-totals') vira
+// um documento na coleção "kv", com o valor salvo (em JSON) no campo "value".
+// Isso preserva 100% da lógica do app (login, alvos, tempo de oração,
+// conquistas, backup) — só troca ONDE os dados ficam guardados.
+const firebaseConfig = {
+  apiKey: "AIzaSyCInYGlsonTgwoGPANPev0Eehbj_tVDlrI",
+  authDomain: "lancando-as-redes-6abde.firebaseapp.com",
+  projectId: "lancando-as-redes-6abde",
+  storageBucket: "lancando-as-redes-6abde.firebasestorage.app",
+  messagingSenderId: "376480483053",
+  appId: "1:376480483053:web:4bd7bffba1e77ee02f6ee4",
+  measurementId: "G-G6CKN78L0B"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+const KV_COLLECTION = 'kv';
+
+const DISCIPULADORES = [
+  'Lucas Claudino',
+  'Erick Martins',
+  'Douglas Ferreira',
+  'Victor Jesus',
+  'Guilherme Andrade',
+  'Kleison'
+];
+
+// Suporta mais de um login com acesso ao Painel Geral (admin master, vê tudo).
+// Para dar acesso de admin master a mais alguém, basta acrescentar o nome aqui.
+const ADMIN_NAMES = ['Obreiro ADM', 'ADM'];
+const MAX_ALVOS_POR_CATEGORIA = 3;
+
+// Admin por discipulador: basta a pessoa logar com o nome do discipulador
+// seguido de " ADM" (ex: "Lucas Claudino ADM") para ter acesso a um painel
+// igual ao do obreiro, mas enxergando só o próprio grupo de discípulos.
+function matchDiscipuladorAdminName(name){
+  const slug = slugKey(name);
+  for(const d of DISCIPULADORES){
+    if(slug === slugKey(d + ' ADM')) return d;
+  }
+  return null;
+}
+
+const state = {
+  name: null,
+  discipulador: null,
+  targets: null,
+  timerSeconds: 0,
+  timerRunning: false,
+  timerInterval: null,
+  activeTab: 'alvos',
+  isAdmin: false,
+  adminScope: null // null = admin master (vê tudo); string = nome do discipulador (vê só o grupo dele)
+};
+
+async function saveDiscipuladorMap(name, discipulador){
+  const map = await getJSON('discipulador-map', {});
+  map[name] = discipulador;
+  await setJSON('discipulador-map', map);
+}
+
+function simpleHash(str){
+  let hash = 5381;
+  for(let i=0;i<str.length;i++){
+    hash = ((hash << 5) + hash) + str.charCodeAt(i);
+    hash = hash & 0xffffffff;
+  }
+  return (hash >>> 0).toString(36);
+}
+
+// A conta é identificada por uma versão "normalizada" do nome (sem acento,
+// sem diferenciar maiúsculas/minúsculas), assim a pessoa nunca perde acesso
+// aos seus dados só porque digitou o nome de um jeito levemente diferente
+// da primeira vez. O nome exibido no app é sempre o que foi digitado no
+// cadastro original.
+async function findAccount(name){
+  const map = await getJSON('user-credentials', {});
+  return map[slugKey(name)] || null; // { hash, displayName } ou null
+}
+async function saveCredential(name, password){
+  const map = await getJSON('user-credentials', {});
+  map[slugKey(name)] = { hash: simpleHash(password), displayName: name.trim() };
+  await setJSON('user-credentials', map);
+}
+async function checkCredential(name, password){
+  const account = await findAccount(name);
+  if(!account) return null;
+  return account.hash === simpleHash(password) ? account.displayName : false;
+}
+// Reseta a senha de uma conta: remove o registro de credencial (mas os dados
+// da pessoa, que ficam salvos pelo nome, não são afetados). Na próxima vez
+// que a pessoa digitar o nome dela, o app trata como primeiro acesso e pede
+// para criar uma senha nova.
+async function resetCredential(name){
+  const map = await getJSON('user-credentials', {});
+  delete map[slugKey(name)];
+  await setJSON('user-credentials', map);
+}
+
+function el(html){
+  const t = document.createElement('template');
+  t.innerHTML = html.trim();
+  return t.content.firstChild;
+}
+
+function storageAvailable(){
+  return db !== null && typeof db !== 'undefined';
+}
+
+async function getJSON(key, fallback){
+  if(!storageAvailable()) return fallback;
+  try{
+    const doc = await db.collection(KV_COLLECTION).doc(key).get();
+    if(!doc.exists) return fallback;
+    const data = doc.data();
+    return (data && typeof data.value === 'string') ? JSON.parse(data.value) : fallback;
+  }catch(e){ console.error('storage error', e); return fallback; }
+}
+async function setJSON(key, value){
+  if(!storageAvailable()) return false;
+  try{
+    await db.collection(KV_COLLECTION).doc(key).set({ value: JSON.stringify(value) });
+    return true;
+  }catch(e){ console.error('storage error', e); return false; }
+}
+async function deleteKey(key){
+  if(!storageAvailable()) return false;
+  try{
+    await db.collection(KV_COLLECTION).doc(key).delete();
+    return true;
+  }catch(e){ console.error('storage error', e); return false; }
+}
+
+function todayStr(){
+  const d = new Date();
+  const y = d.getFullYear();
+  const m = String(d.getMonth()+1).padStart(2,'0');
+  const dd = String(d.getDate()).padStart(2,'0');
+  return `${y}-${m}-${dd}`;
+}
+function fmtDate(s){
+  const [y,m,d] = s.split('-');
+  return `${d}/${m}/${y}`;
+}
+function minToHM(min){
+  min = Math.round(min);
+  const h = Math.floor(min/60);
+  const m = min%60;
+  if(h===0) return `${m} min`;
+  return `${h}h ${String(m).padStart(2,'0')}min`;
+}
+function fmtClock(totalSeconds){
+  const h = String(Math.floor(totalSeconds/3600)).padStart(2,'0');
+  const m = String(Math.floor((totalSeconds%3600)/60)).padStart(2,'0');
+  const s = String(totalSeconds%60).padStart(2,'0');
+  return `${h}:${m}:${s}`;
+}
+
+function slugKey(str){
+  return (str || '')
+    .trim()
+    .toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/\s+/g, '_')
+    .replace(/[^a-z0-9_\-]/g, '');
+}
+
+async function loadTargets(name){
+  return await getJSON('targets:'+slugKey(name), null);
+}
+async function saveTargets(name, data){
+  const ok = await setJSON('targets:'+slugKey(name), data);
+  if(ok){
+    const index = await getJSON('targets-index', []);
+    if(!index.includes(name)){
+      index.push(name);
+      await setJSON('targets-index', index);
+    }
+  }
+  return ok;
+}
+
+async function loadAllTargets(){
+  const names = await getJSON('targets-index', []);
+  const discipuladorMap = await getJSON('discipulador-map', {});
+  const items = await Promise.all(names.map(async n => {
+    const t = await getJSON('targets:'+slugKey(n), null);
+    return t ? { name: n, discipulador: discipuladorMap[n] || '', pessoas: t.pessoas || [], conquista: t.conquista || [], ovelhaPerdida: t.ovelhaPerdida || [] } : null;
+  }));
+  return items.filter(Boolean).sort((a,b) => a.name.localeCompare(b.name, 'pt-BR'));
+}
+
+async function getGroupGrandTotal(){
+  const totals = await getJSON('prayer-totals', {});
+  return Object.values(totals).reduce((a,b)=>a+b,0);
+}
+
+async function resetAllPrayerHours(){
+  if(!storageAvailable()) return false;
+  try{
+    const dates = await getJSON('prayer-dates', []);
+    for(const d of dates){
+      try{ await deleteKey('prayer-stats:'+d); }catch(e){}
+    }
+    try{ await deleteKey('prayer-totals'); }catch(e){}
+    try{ await deleteKey('prayer-dates'); }catch(e){}
+    return true;
+  }catch(e){ console.error('reset error', e); return false; }
+}
+
+async function addPrayerMinutes(name, minutes){
+  const dateStr = todayStr();
+  const daily = await getJSON('prayer-stats:'+dateStr, {});
+  daily[name] = (daily[name]||0) + minutes;
+  await setJSON('prayer-stats:'+dateStr, daily);
+
+  const totals = await getJSON('prayer-totals', {});
+  totals[name] = (totals[name]||0) + minutes;
+  await setJSON('prayer-totals', totals);
+
+  const dates = await getJSON('prayer-dates', []);
+  if(!dates.includes(dateStr)){
+    dates.push(dateStr); dates.sort();
+    await setJSON('prayer-dates', dates);
+  }
+  return daily[name];
+}
+
+function compressImage(file, maxWidth){
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onerror = () => reject(new Error('Falha ao ler o arquivo'));
+    reader.onload = () => {
+      const img = new Image();
+      img.onerror = () => reject(new Error('Falha ao carregar a imagem'));
+      img.onload = () => {
+        const scale = Math.min(1, maxWidth / img.width);
+        const w = Math.round(img.width * scale);
+        const h = Math.round(img.height * scale);
+        const canvas = document.createElement('canvas');
+        canvas.width = w; canvas.height = h;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, w, h);
+        resolve(canvas.toDataURL('image/jpeg', 0.72));
+      };
+      img.src = reader.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+async function addAchievement(name, discipulador, target, caption, photoDataUrl){
+  const id = Date.now() + '-' + Math.random().toString(36).slice(2,8);
+  const key = 'achievement:' + id;
+  const ok = await setJSON(key, { id, name, discipulador, target, caption, photo: photoDataUrl || null, date: todayStr() });
+  if(!ok) return false;
+  const ids = await getJSON('achievement-ids', []);
+  ids.unshift(id);
+  await setJSON('achievement-ids', ids);
+  return true;
+}
+
+async function loadAchievements(limit){
+  const ids = (await getJSON('achievement-ids', [])).slice(0, limit || 24);
+  const items = await Promise.all(ids.map(id => getJSON('achievement:' + id, null)));
+  return items.filter(Boolean);
+}
+
+async function loadDashboard(name){
+  const dateStr = todayStr();
+  const daily = await getJSON('prayer-stats:'+dateStr, {});
+  const totals = await getJSON('prayer-totals', {});
+  const discipuladorMap = await getJSON('discipulador-map', {});
+  const todayGroupTotal = Object.values(daily).reduce((a,b)=>a+b,0);
+  const yourToday = daily[name] || 0;
+  const yourTotal = totals[name] || 0;
+  const grandTotal = Object.values(totals).reduce((a,b)=>a+b,0);
+  const ranking = Object.entries(totals).sort((a,b)=>b[1]-a[1]).slice(0,10);
+  const participantsToday = Object.keys(daily).length;
+
+  const groupTotals = {};
+  const groupCounts = {};
+  Object.entries(totals).forEach(([personName, minutes]) => {
+    const group = discipuladorMap[personName] || 'Sem discipulador informado';
+    groupTotals[group] = (groupTotals[group]||0) + minutes;
+    groupCounts[group] = (groupCounts[group]||0) + 1;
+  });
+  const groupRanking = Object.entries(groupTotals).sort((a,b)=>b[1]-a[1]);
+
+  return { todayGroupTotal, yourToday, yourTotal, grandTotal, ranking, participantsToday, discipuladorMap, groupRanking, groupCounts };
+}
+
+async function loadAdminOverview(){
+  const totals = await getJSON('prayer-totals', {});
+  const discipuladorMap = await getJSON('discipulador-map', {});
+  const targetItems = await loadAllTargets();
+  const achievements = await loadAchievements(9999);
+
+  const achievementCounts = {};
+  achievements.forEach(a => { achievementCounts[a.name] = (achievementCounts[a.name]||0) + 1; });
+
+  const namesSet = new Set([
+    ...Object.keys(totals),
+    ...Object.keys(discipuladorMap),
+    ...targetItems.map(t => t.name)
+  ]);
+
+  const targetsByName = {};
+  targetItems.forEach(t => { targetsByName[t.name] = t; });
+
+  const people = Array.from(namesSet).map(name => {
+    const t = targetsByName[name] || { pessoas: [], conquista: [], ovelhaPerdida: [] };
+    return {
+      name,
+      discipulador: discipuladorMap[name] || '',
+      totalMinutes: totals[name] || 0,
+      achievementsCount: achievementCounts[name] || 0,
+      pessoas: t.pessoas || [],
+      conquista: t.conquista || [],
+      ovelhaPerdida: t.ovelhaPerdida || []
+    };
+  }).sort((a,b) => b.totalMinutes - a.totalMinutes);
+
+  const grandTotal = Object.values(totals).reduce((a,b)=>a+b,0);
+  let totalTargets = 0;
+  people.forEach(p => { totalTargets += p.pessoas.length + p.conquista.length + p.ovelhaPerdida.length; });
+
+  return { people, grandTotal, totalTargets, totalAchievements: achievements.length };
+}
+
+const app = document.getElementById('app');
+
+function render(){
+  app.innerHTML = '';
+  if(!state.name){
+    app.appendChild(renderLogin());
+  } else {
+    app.appendChild(renderApp());
+  }
+}
+
+function renderLogin(){
+  const wrapper = el(`
+    <div class="card">
+      <h2>Identifique-se</h2>
+      <p class="sub">Digite seu nome para continuar.</p>
+      <label>Nome completo</label>
+      <div class="row">
+        <input type="text" id="nameInput" placeholder="Ex: Maria Silva" />
+      </div>
+      <div id="loginDynamic"><p class="sub" style="margin:0">Digite seu nome e clique fora do campo para continuar.</p></div>
+      <button class="btn-primary" id="loginBtn" style="margin-top:14px">Entrar</button>
+      <div id="loginMsg"></div>
+    </div>
+  `);
+
+  const nameInput = wrapper.querySelector('#nameInput');
+  const dynamicWrap = wrapper.querySelector('#loginDynamic');
+  const btn = wrapper.querySelector('#loginBtn');
+  const msgEl = wrapper.querySelector('#loginMsg');
+
+  let mode = null; // 'existing' | 'new'
+  let checkedName = null;
+  let isAdminName = false;
+  let scopedDiscipulador = null; // nome do discipulador, se for um login "{Discipulador} ADM"
+
+  async function checkName(){
+    const name = nameInput.value.trim();
+    msgEl.innerHTML = '';
+    if(!name){
+      dynamicWrap.innerHTML = `<p class="sub" style="margin:0">Digite seu nome e clique fora do campo para continuar.</p>`;
+      mode = null; checkedName = null; isAdminName = false; scopedDiscipulador = null;
+      return;
+    }
+    if(name === checkedName) return;
+    checkedName = name;
+    isAdminName = ADMIN_NAMES.some(a => slugKey(a) === slugKey(name));
+    scopedDiscipulador = isAdminName ? null : matchDiscipuladorAdminName(name);
+    const isAnyAdmin = isAdminName || !!scopedDiscipulador;
+    const account = await findAccount(name);
+    if(account){
+      mode = 'existing';
+      const discipMap = await getJSON('discipulador-map', {});
+      const discipulador = discipMap[account.displayName];
+      const welcomeMsg = isAdminName
+        ? 'Bem-vindo(a) de volta, painel geral do obreiro.'
+        : scopedDiscipulador
+          ? `Bem-vindo(a) de volta, painel do discipulador ${escapeHtml(scopedDiscipulador)}.`
+          : `Bem-vindo(a) de volta, ${escapeHtml(account.displayName)}${discipulador ? ' · ' + escapeHtml(discipulador) : ''}.`;
+      dynamicWrap.innerHTML = `
+        <p class="sub" style="margin:0 0 10px">${welcomeMsg}</p>
+        <label>Senha</label>
+        <div class="row"><input type="password" id="passwordInput" placeholder="Digite sua senha" /></div>
+      `;
+    } else if(isAnyAdmin){
+      mode = 'new';
+      const introMsg = isAdminName
+        ? 'Primeiro acesso deste login de obreiro geral. Crie uma senha para proteger o painel geral.'
+        : `Primeiro acesso deste login de admin do discipulador ${escapeHtml(scopedDiscipulador)}. Crie uma senha para proteger esse painel.`;
+      dynamicWrap.innerHTML = `
+        <p class="sub" style="margin:0 0 10px">${introMsg}</p>
+        <label>Crie uma senha</label>
+        <div class="row"><input type="password" id="passwordInput" placeholder="Mínimo 4 caracteres" /></div>
+        <label>Confirme a senha</label>
+        <div class="row"><input type="password" id="passwordConfirmInput" placeholder="Repita a senha" /></div>
+      `;
+    } else {
+      mode = 'new';
+      dynamicWrap.innerHTML = `
+        <p class="sub" style="margin:0 0 10px">Nome novo por aqui! Selecione seu discipulador e crie uma senha para proteger seus dados.</p>
+        <label>Discipulador</label>
+        <div class="row">
+          <select id="discipuladorInput">
+            <option value="">Selecione...</option>
+            ${DISCIPULADORES.map(d => `<option value="${escapeHtml(d)}">${escapeHtml(d)}</option>`).join('')}
+          </select>
+        </div>
+        <label>Crie uma senha</label>
+        <div class="row"><input type="password" id="passwordInput" placeholder="Mínimo 4 caracteres" /></div>
+        <label>Confirme a senha</label>
+        <div class="row"><input type="password" id="passwordConfirmInput" placeholder="Repita a senha" /></div>
+      `;
+    }
+  }
+
+  nameInput.addEventListener('blur', checkName);
+  nameInput.addEventListener('keydown', e => { if(e.key==='Enter'){ e.preventDefault(); checkName(); } });
+
+  const go = async () => {
+    const name = nameInput.value.trim();
+    if(!name){
+      msgEl.innerHTML = `<div class="msg err">Digite seu nome para continuar.</div>`;
+      return;
+    }
+    if(name !== checkedName){
+      await checkName();
+    }
+    const passwordInput = dynamicWrap.querySelector('#passwordInput');
+    const password = passwordInput ? passwordInput.value : '';
+
+    if(mode === 'existing'){
+      if(!password){
+        msgEl.innerHTML = `<div class="msg err">Digite sua senha.</div>`;
+        return;
+      }
+      btn.disabled = true; btn.textContent = 'Entrando...';
+      const displayName = await checkCredential(name, password);
+      btn.disabled = false; btn.textContent = 'Entrar';
+      if(!displayName){
+        msgEl.innerHTML = `<div class="msg err">Senha incorreta. Tente novamente.</div>`;
+        return;
+      }
+      if(isAdminName || scopedDiscipulador){
+        state.isAdmin = true;
+        state.adminScope = isAdminName ? null : scopedDiscipulador;
+        state.name = displayName;
+        state.discipulador = null;
+        state.targets = null;
+        state.activeTab = 'obreiro';
+        render();
+        return;
+      }
+      const discipMap = await getJSON('discipulador-map', {});
+      state.isAdmin = false;
+      state.adminScope = null;
+      state.name = displayName;
+      state.discipulador = discipMap[displayName] || '';
+      state.targets = await loadTargets(state.name);
+      state.activeTab = state.targets ? 'registrar' : 'alvos';
+      render();
+    } else if(isAdminName || scopedDiscipulador){
+      const confirmInput = dynamicWrap.querySelector('#passwordConfirmInput');
+      const confirmPassword = confirmInput ? confirmInput.value : '';
+      if(!password || password.length < 4){
+        msgEl.innerHTML = `<div class="msg err">Crie uma senha com pelo menos 4 caracteres.</div>`;
+        return;
+      }
+      if(password !== confirmPassword){
+        msgEl.innerHTML = `<div class="msg err">As senhas não conferem.</div>`;
+        return;
+      }
+      btn.disabled = true; btn.textContent = 'Cadastrando...';
+      await saveCredential(name, password);
+      state.isAdmin = true;
+      state.adminScope = isAdminName ? null : scopedDiscipulador;
+      state.name = name.trim();
+      state.discipulador = null;
+      state.targets = null;
+      state.activeTab = 'obreiro';
+      render();
+    } else {
+      const discipuladorSelect = dynamicWrap.querySelector('#discipuladorInput');
+      const confirmInput = dynamicWrap.querySelector('#passwordConfirmInput');
+      const discipulador = discipuladorSelect ? discipuladorSelect.value : '';
+      const confirmPassword = confirmInput ? confirmInput.value : '';
+      if(!discipulador){
+        msgEl.innerHTML = `<div class="msg err">Selecione seu discipulador para continuar.</div>`;
+        return;
+      }
+      if(!password || password.length < 4){
+        msgEl.innerHTML = `<div class="msg err">Crie uma senha com pelo menos 4 caracteres.</div>`;
+        return;
+      }
+      if(password !== confirmPassword){
+        msgEl.innerHTML = `<div class="msg err">As senhas não conferem.</div>`;
+        return;
+      }
+      btn.disabled = true; btn.textContent = 'Cadastrando...';
+      await saveCredential(name, password);
+      state.isAdmin = false;
+      state.name = name.trim();
+      state.discipulador = discipulador;
+      await saveDiscipuladorMap(state.name, discipulador);
+      state.targets = await loadTargets(state.name);
+      state.activeTab = state.targets ? 'registrar' : 'alvos';
+      render();
+    }
+  };
+  btn.addEventListener('click', go);
+  wrapper.addEventListener('keydown', e => { if(e.key==='Enter' && e.target.id !== 'nameInput') go(); });
+  return wrapper;
+}
+
+function renderApp(){
+  const container = document.createElement('div');
+
+  const topbar = el(`
+    <div class="topbar">
+      <div class="who">${state.isAdmin ? 'Painel do' : 'Orando como'} <b>${escapeHtml(state.name)}</b></div>
+      <button class="btn-ghost btn-small" id="switchBtn">${state.isAdmin ? 'Sair' : 'Trocar pessoa'}</button>
+    </div>
+  `);
+  topbar.querySelector('#switchBtn').addEventListener('click', () => {
+    stopTimer();
+    state.name = null; state.discipulador = null; state.targets = null; state.timerSeconds = 0; state.isAdmin = false; state.adminScope = null;
+    render();
+  });
+  container.appendChild(topbar);
+
+  if(state.isAdmin){
+    container.appendChild(renderAdminPanel());
+    return container;
+  }
+
+  const tabs = el(`
+    <nav class="tabs">
+      <button data-tab="alvos">Meus Alvos</button>
+      <button data-tab="registrar">Registrar Oração</button>
+      <button data-tab="conquistas">Conquistas</button>
+      <button data-tab="todosalvos">Todos os Alvos</button>
+      <button data-tab="painel">Painel Geral</button>
+    </nav>
+  `);
+  tabs.querySelectorAll('button').forEach(b => {
+    if(b.dataset.tab === state.activeTab) b.classList.add('active');
+    b.addEventListener('click', () => { state.activeTab = b.dataset.tab; render(); });
+  });
+  container.appendChild(tabs);
+
+  if(state.activeTab === 'alvos') container.appendChild(renderTargetsCard());
+  if(state.activeTab === 'registrar') container.appendChild(renderRegisterCard());
+  if(state.activeTab === 'conquistas') container.appendChild(renderAchievementsCard());
+  if(state.activeTab === 'todosalvos') container.appendChild(renderAllTargetsCard());
+  if(state.activeTab === 'painel') container.appendChild(renderPanelCard());
+
+  return container;
+}
+
+function escapeHtml(s){
+  const d = document.createElement('div'); d.textContent = s; return d.innerHTML;
+}
+
+const TARGET_CATEGORIES = [
+  { key: 'pessoas', label: 'Pessoas', groupTitle: 'Pessoas', addLabel: '+ adicionar pessoa', placeholder: 'Nome da pessoa', chipClass: 'pessoa' },
+  { key: 'conquista', label: 'Conquista', groupTitle: 'Conquista', addLabel: '+ adicionar alvo de conquista', placeholder: 'Nome do alvo', chipClass: 'conquista' },
+  { key: 'ovelhaPerdida', label: 'Ovelha Perdida', groupTitle: 'Ovelha Perdida', addLabel: '+ adicionar pessoa', placeholder: 'Nome da pessoa', chipClass: 'perdido' }
+];
+
+// ---- Export / Import de alvos em planilha (.xlsx) ----
+// Formato de linha compartilhado entre exportação, modelo e importação:
+// Nome da Pessoa | Discipulador | Tipo de Alvo | Alvo | Anônimo (Sim/Não)
+
+function normalizeLabel(s){
+  return String(s || '')
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase().trim();
+}
+
+function targetsToExportRows(items, opts){
+  const anonymize = opts && opts.anonymize;
+  const rows = [];
+  items.forEach(item => {
+    TARGET_CATEGORIES.forEach(cat => {
+      (item[cat.key] || []).forEach(t => rows.push({
+        'Nome da Pessoa': (t.anonimo && anonymize) ? 'Anônimo' : item.name,
+        'Discipulador': (t.anonimo && anonymize) ? '' : (item.discipulador || ''),
+        'Tipo de Alvo': cat.label,
+        'Alvo': t.text,
+        'Anônimo': t.anonimo ? 'Sim' : 'Não'
+      }));
+    });
+  });
+  return rows;
+}
+
+function downloadTargetsWorkbook(rows, filename){
+  if(typeof XLSX === 'undefined'){
+    alert('A biblioteca de planilhas não carregou. Verifique sua conexão e tente novamente.');
+    return false;
+  }
+  const ws = XLSX.utils.json_to_sheet(rows);
+  ws['!cols'] = [{wch:24},{wch:22},{wch:16},{wch:30},{wch:10}];
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Alvos de Oração');
+  XLSX.writeFile(wb, filename);
+  return true;
+}
+
+function buildTemplateRows(){
+  const d = DISCIPULADORES[0] || '';
+  return [
+    { 'Nome da Pessoa': 'Maria Silva', 'Discipulador': d, 'Tipo de Alvo': 'Pessoas', 'Alvo': 'Conversão do meu vizinho João', 'Anônimo': 'Não' },
+    { 'Nome da Pessoa': 'Maria Silva', 'Discipulador': d, 'Tipo de Alvo': 'Conquista', 'Alvo': 'Restauração familiar', 'Anônimo': 'Sim' },
+    { 'Nome da Pessoa': 'Maria Silva', 'Discipulador': d, 'Tipo de Alvo': 'Ovelha Perdida', 'Alvo': 'Pedro (ex-membro)', 'Anônimo': 'Não' }
+  ];
+}
+
+// Lê linhas já extraídas de uma planilha (via XLSX.utils.sheet_to_json) e grava
+// os alvos por pessoa. Cada pessoa citada tem suas 3 categorias totalmente
+// substituídas pelo conteúdo da planilha (linhas ausentes viram categoria vazia).
+async function importTargetsFromRows(rows){
+  const catByLabel = {};
+  TARGET_CATEGORIES.forEach(cat => { catByLabel[normalizeLabel(cat.label)] = cat.key; });
+
+  const people = {};
+  let invalidRows = 0;
+  let truncated = 0;
+
+  rows.forEach(row => {
+    const name = String(row['Nome da Pessoa'] || '').trim();
+    const alvo = String(row['Alvo'] || '').trim();
+    const catKey = catByLabel[normalizeLabel(row['Tipo de Alvo'])];
+    if(!name || normalizeLabel(name) === 'anonimo' || !alvo || !catKey){
+      invalidRows++;
+      return;
+    }
+    const anonimo = normalizeLabel(row['Anônimo']).startsWith('s');
+    const discipulador = String(row['Discipulador'] || '').trim();
+    const slug = slugKey(name);
+    if(!people[slug]) people[slug] = { displayName: name, discipulador: '', pessoas: [], conquista: [], ovelhaPerdida: [] };
+    if(discipulador) people[slug].discipulador = discipulador;
+    if(people[slug][catKey].length >= MAX_ALVOS_POR_CATEGORIA){
+      truncated++;
+      return;
+    }
+    people[slug][catKey].push({ text: alvo, anonimo });
+  });
+
+  const entries = Object.values(people);
+  for(const p of entries){
+    await saveTargets(p.displayName, { pessoas: p.pessoas, conquista: p.conquista, ovelhaPerdida: p.ovelhaPerdida });
+    if(p.discipulador) await saveDiscipuladorMap(p.displayName, p.discipulador);
+  }
+
+  return { peopleCount: entries.length, invalidRows, truncated };
+}
+
+async function handleTargetsImportFile(file, msgEl, onDone){
+  msgEl.innerHTML = `<div class="loading">Lendo planilha...</div>`;
+  try{
+    if(typeof XLSX === 'undefined'){
+      msgEl.innerHTML = `<div class="msg err">A biblioteca de planilhas não carregou. Verifique sua conexão e tente novamente.</div>`;
+      return;
+    }
+    const buf = await file.arrayBuffer();
+    const wb = XLSX.read(buf, { type: 'array' });
+    const sheet = wb.Sheets[wb.SheetNames[0]];
+    const rows = XLSX.utils.sheet_to_json(sheet, { defval: '' });
+    if(!rows.length){
+      msgEl.innerHTML = `<div class="msg err">A planilha está vazia ou não pôde ser lida.</div>`;
+      return;
+    }
+    const result = await importTargetsFromRows(rows);
+    if(result.peopleCount === 0){
+      msgEl.innerHTML = `<div class="msg err">Nenhuma linha válida encontrada. Confira se a planilha segue o modelo (colunas Nome da Pessoa, Discipulador, Tipo de Alvo, Alvo, Anônimo).</div>`;
+      return;
+    }
+    let text = `${result.peopleCount} pessoa${result.peopleCount===1?'':'s'} importada${result.peopleCount===1?'':'s'}/atualizada${result.peopleCount===1?'':'s'}.`;
+    if(result.truncated) text += ` ${result.truncated} alvo(s) ignorado(s) por ultrapassar o limite de ${MAX_ALVOS_POR_CATEGORIA} por categoria.`;
+    if(result.invalidRows) text += ` ${result.invalidRows} linha(s) inválida(s) ignorada(s).`;
+    msgEl.innerHTML = `<div class="msg ok">${text}</div>`;
+    if(onDone) await onDone();
+  }catch(err){
+    console.error('import error', err);
+    msgEl.innerHTML = `<div class="msg err">Não foi possível importar essa planilha. Confira se o arquivo segue o modelo.</div>`;
+  }
+}
+
+function renderTargetsExportImport(rowsProvider, defaultFilename){
+  const box = el(`
+    <div class="target-group" style="border:1px solid var(--border); border-radius:var(--radius-sm); padding:16px 18px; margin-bottom:18px; background: var(--bg-panel-2);">
+      <h3 style="margin-bottom:6px">Exportar / Importar Alvos</h3>
+      <p class="sub" style="margin:0 0 12px">Baixe um modelo em branco para preencher offline, exporte os alvos atuais ou importe uma planilha preenchida. A importação substitui as categorias preenchidas na planilha para cada pessoa listada.</p>
+      <div class="row" style="flex-wrap:wrap">
+        <button class="btn-ghost btn-small" id="downloadTemplateBtn" type="button">Baixar modelo (.xlsx)</button>
+        <button class="btn-ghost btn-small" id="exportTargetsBtn" type="button">Exportar alvos atuais (.xlsx)</button>
+      </div>
+      <label style="margin-top:12px">Importar planilha preenchida</label>
+      <div class="row">
+        <input type="file" id="importTargetsFile" accept=".xlsx,.xls" style="flex:1; padding:8px 0; color: var(--text-muted); font-size:13px;" />
+        <button class="btn-primary btn-small" id="importTargetsBtn" type="button">Importar</button>
+      </div>
+      <div id="importTargetsMsg"></div>
+    </div>
+  `);
+
+  box.querySelector('#downloadTemplateBtn').addEventListener('click', () => {
+    downloadTargetsWorkbook(buildTemplateRows(), 'modelo-alvos-lancando-as-redes.xlsx');
+  });
+
+  box.querySelector('#exportTargetsBtn').addEventListener('click', async () => {
+    const btn = box.querySelector('#exportTargetsBtn');
+    btn.disabled = true; btn.textContent = 'Gerando...';
+    try{
+      const rows = await rowsProvider();
+      if(!rows.length){
+        alert('Ainda não há alvos cadastrados para exportar.');
+      } else {
+        downloadTargetsWorkbook(rows, defaultFilename);
+      }
+    } finally {
+      btn.disabled = false; btn.textContent = 'Exportar alvos atuais (.xlsx)';
+    }
+  });
+
+  box.querySelector('#importTargetsBtn').addEventListener('click', async () => {
+    const fileInput = box.querySelector('#importTargetsFile');
+    const msgEl = box.querySelector('#importTargetsMsg');
+    const file = fileInput.files[0];
+    if(!file){
+      msgEl.innerHTML = `<div class="msg err">Selecione um arquivo .xlsx para importar.</div>`;
+      return;
+    }
+    const btn = box.querySelector('#importTargetsBtn');
+    btn.disabled = true; btn.textContent = 'Importando...';
+    await handleTargetsImportFile(file, msgEl, async () => {
+      fileInput.value = '';
+      if(state.isAdmin) render();
+    });
+    btn.disabled = false; btn.textContent = 'Importar';
+  });
+
+  return box;
+}
+
+// ---- Backup Completo (Usuários/Senhas + Alvos + Tempo de Oração + Conquistas) ----
+// Objetivo: se o site cair/for perdido, essa planilha permite recriar tudo em
+// um site novo. Guarda a senha como HASH (nunca em texto puro) — ao restaurar,
+// o hash volta exatamente igual, então cada pessoa continua entrando com a
+// MESMA senha de antes, sem que ninguém consiga ler a senha real na planilha.
+// Fotos de testemunho não entram no backup (ficariam pesadas demais para a
+// planilha); só o texto do testemunho é preservado.
+
+async function buildFullBackupData(){
+  const credMap = await getJSON('user-credentials', {});
+  const discipMap = await getJSON('discipulador-map', {});
+  const totals = await getJSON('prayer-totals', {});
+  const targetItems = await loadAllTargets();
+  const achievements = await loadAchievements(9999);
+
+  const usersRows = Object.values(credMap).map(acc => ({
+    'Nome': acc.displayName,
+    'Senha (hash)': acc.hash,
+    'Discipulador': discipMap[acc.displayName] || ''
+  }));
+
+  const targetsRows = targetsToExportRows(targetItems, { anonymize: false });
+
+  const prayerRows = Object.entries(totals).map(([nome, minutos]) => ({
+    'Nome': nome,
+    'Total (minutos)': minutos,
+    'Total (h:min)': minToHM(minutos)
+  }));
+
+  const achvRows = achievements.map(a => ({
+    'Nome': a.name,
+    'Discipulador': a.discipulador || '',
+    'Alvo Conquistado': a.target,
+    'Testemunho': a.caption || '',
+    'Data': a.date
+  }));
+
+  return { usersRows, targetsRows, prayerRows, achvRows };
+}
+
+function downloadFullBackupWorkbook(data, filename){
+  if(typeof XLSX === 'undefined'){
+    alert('A biblioteca de planilhas não carregou. Verifique sua conexão e tente novamente.');
+    return false;
+  }
+  const wb = XLSX.utils.book_new();
+
+  const wsUsers = XLSX.utils.json_to_sheet(data.usersRows);
+  wsUsers['!cols'] = [{wch:24},{wch:32},{wch:22}];
+  XLSX.utils.book_append_sheet(wb, wsUsers, 'Usuarios');
+
+  const wsTargets = XLSX.utils.json_to_sheet(data.targetsRows);
+  wsTargets['!cols'] = [{wch:24},{wch:22},{wch:16},{wch:30},{wch:10}];
+  XLSX.utils.book_append_sheet(wb, wsTargets, 'Alvos de Oracao');
+
+  const wsPrayer = XLSX.utils.json_to_sheet(data.prayerRows);
+  wsPrayer['!cols'] = [{wch:24},{wch:16},{wch:16}];
+  XLSX.utils.book_append_sheet(wb, wsPrayer, 'Tempo de Oracao');
+
+  const wsAchv = XLSX.utils.json_to_sheet(data.achvRows);
+  wsAchv['!cols'] = [{wch:24},{wch:22},{wch:30},{wch:40},{wch:12}];
+  XLSX.utils.book_append_sheet(wb, wsAchv, 'Conquistas');
+
+  XLSX.writeFile(wb, filename);
+  return true;
+}
+
+async function restoreFullBackup(workbook){
+  const result = { users: 0, targets: 0, prayerEntries: 0, achievements: 0 };
+
+  if(workbook.Sheets['Usuarios']){
+    const rows = XLSX.utils.sheet_to_json(workbook.Sheets['Usuarios'], { defval: '' });
+    const credMap = await getJSON('user-credentials', {});
+    const discipMap = await getJSON('discipulador-map', {});
+    rows.forEach(r => {
+      const nome = String(r['Nome'] || '').trim();
+      const hash = String(r['Senha (hash)'] || '').trim();
+      const discipulador = String(r['Discipulador'] || '').trim();
+      if(!nome || !hash) return;
+      credMap[slugKey(nome)] = { hash, displayName: nome };
+      if(discipulador) discipMap[nome] = discipulador;
+      result.users++;
+    });
+    await setJSON('user-credentials', credMap);
+    await setJSON('discipulador-map', discipMap);
+  }
+
+  if(workbook.Sheets['Alvos de Oracao']){
+    const rows = XLSX.utils.sheet_to_json(workbook.Sheets['Alvos de Oracao'], { defval: '' });
+    if(rows.length){
+      const r2 = await importTargetsFromRows(rows);
+      result.targets = r2.peopleCount;
+    }
+  }
+
+  if(workbook.Sheets['Tempo de Oracao']){
+    const rows = XLSX.utils.sheet_to_json(workbook.Sheets['Tempo de Oracao'], { defval: '' });
+    const totals = await getJSON('prayer-totals', {});
+    rows.forEach(r => {
+      const nome = String(r['Nome'] || '').trim();
+      const minutos = Number(r['Total (minutos)']) || 0;
+      if(!nome) return;
+      totals[nome] = minutos;
+      result.prayerEntries++;
+    });
+    await setJSON('prayer-totals', totals);
+  }
+
+  if(workbook.Sheets['Conquistas']){
+    const rows = XLSX.utils.sheet_to_json(workbook.Sheets['Conquistas'], { defval: '' });
+    const ids = await getJSON('achievement-ids', []);
+    for(const r of rows){
+      const nome = String(r['Nome'] || '').trim();
+      const alvo = String(r['Alvo Conquistado'] || '').trim();
+      if(!nome || !alvo) continue;
+      const id = 'restaurado-' + Date.now() + '-' + Math.random().toString(36).slice(2,8);
+      const achv = {
+        id, name: nome,
+        discipulador: String(r['Discipulador'] || '').trim(),
+        target: alvo,
+        caption: String(r['Testemunho'] || '').trim(),
+        photo: null,
+        date: String(r['Data'] || '').trim() || todayStr()
+      };
+      await setJSON('achievement:' + id, achv);
+      ids.unshift(id);
+      result.achievements++;
+    }
+    await setJSON('achievement-ids', ids);
+  }
+
+  return result;
+}
+
+function renderFullBackupBox(){
+  const box = el(`
+    <div class="target-group" style="border:1px solid var(--border); border-radius:var(--radius-sm); padding:16px 18px; margin-bottom:18px; background: var(--bg-panel-2);">
+      <h3 style="margin-bottom:6px">Backup Completo do Site</h3>
+      <p class="sub" style="margin:0 0 12px">Uma única planilha com tudo: usuários e senhas (protegidas por criptografia), alvos, tempo de oração e conquistas. Se o site atual cair, crie um site novo e use "Restaurar" com essa mesma planilha para recuperar tudo de uma vez. Recomendado baixar periodicamente (ex: toda semana). Fotos de testemunho não entram no backup, só o texto.</p>
+      <div class="row" style="flex-wrap:wrap">
+        <button class="btn-primary btn-small" id="fullBackupBtn" type="button">Baixar backup completo (.xlsx)</button>
+      </div>
+      <label style="margin-top:14px">Restaurar de um backup completo</label>
+      <div class="row">
+        <input type="file" id="fullRestoreFile" accept=".xlsx,.xls" style="flex:1; padding:8px 0; color: var(--text-muted); font-size:13px;" />
+        <button class="btn-ghost btn-small" id="fullRestoreBtn" type="button">Restaurar</button>
+      </div>
+      <p class="sub" style="margin:8px 0 0; font-size:12px;">Atenção: restaurar substitui senha, alvos e totais de cada pessoa que aparecer na planilha.</p>
+      <div id="fullBackupMsg"></div>
+    </div>
+  `);
+
+  box.querySelector('#fullBackupBtn').addEventListener('click', async () => {
+    const btn = box.querySelector('#fullBackupBtn');
+    btn.disabled = true; btn.textContent = 'Gerando...';
+    try{
+      const data = await buildFullBackupData();
+      downloadFullBackupWorkbook(data, `backup-completo-lancando-as-redes-${todayStr()}.xlsx`);
+    } finally {
+      btn.disabled = false; btn.textContent = 'Baixar backup completo (.xlsx)';
+    }
+  });
+
+  box.querySelector('#fullRestoreBtn').addEventListener('click', async () => {
+    const fileInput = box.querySelector('#fullRestoreFile');
+    const msgEl = box.querySelector('#fullBackupMsg');
+    const file = fileInput.files[0];
+    if(!file){
+      msgEl.innerHTML = `<div class="msg err">Selecione um arquivo .xlsx de backup para restaurar.</div>`;
+      return;
+    }
+    if(!confirm('Isso vai substituir senha, alvos, tempo de oração e conquistas das pessoas presentes nessa planilha. Deseja continuar?')) return;
+    const btn = box.querySelector('#fullRestoreBtn');
+    btn.disabled = true; btn.textContent = 'Restaurando...';
+    msgEl.innerHTML = `<div class="loading">Restaurando backup...</div>`;
+    try{
+      if(typeof XLSX === 'undefined'){
+        msgEl.innerHTML = `<div class="msg err">A biblioteca de planilhas não carregou. Verifique sua conexão e tente novamente.</div>`;
+        return;
+      }
+      const buf = await file.arrayBuffer();
+      const workbook = XLSX.read(buf, { type: 'array' });
+      const result = await restoreFullBackup(workbook);
+      msgEl.innerHTML = `<div class="msg ok">Restaurado: ${result.users} usuário(s), ${result.targets} pessoa(s) com alvos, ${result.prayerEntries} registro(s) de tempo, ${result.achievements} conquista(s).</div>`;
+      fileInput.value = '';
+      render();
+    }catch(err){
+      console.error('restore error', err);
+      msgEl.innerHTML = `<div class="msg err">Não foi possível restaurar esse backup. Confira se é o arquivo correto.</div>`;
+    } finally {
+      btn.disabled = false; btn.textContent = 'Restaurar';
+    }
+  });
+
+  return box;
+}
+
+function renderTargetsCard(){
+  const existing = state.targets || { pessoas: [], conquista: [], ovelhaPerdida: [] };
+  const card = el(`
+    <div class="card">
+      <h2>Meus Alvos de Oração</h2>
+      <p class="sub">Organize seus alvos por Pessoas, Conquista e Ovelha Perdida — até ${MAX_ALVOS_POR_CATEGORIA} alvos em cada categoria. Marque "Anônimo" para o alvo aparecer no grupo sem o seu nome.</p>
+      ${TARGET_CATEGORIES.map(cat => `
+        <div id="group_${cat.key}" class="target-group">
+          <h3>${cat.label}</h3>
+        </div>
+        <button class="add-link" data-add="${cat.key}">${cat.addLabel}</button>
+        <p class="sub" id="limit_${cat.key}" style="margin:2px 0 0; font-size:12px;"></p>
+      `).join('')}
+      <div style="margin-top:22px">
+        <button class="btn-primary" id="saveTargetsBtn">Salvar meus alvos</button>
+      </div>
+      <div id="targetsMsg"></div>
+    </div>
+  `);
+
+  const data = {};
+  TARGET_CATEGORIES.forEach(cat => {
+    const rows = existing[cat.key] && existing[cat.key].length ? existing[cat.key] : [{ text: '', anonimo: false }];
+    data[cat.key] = rows.map(r => (typeof r === 'string') ? { text: r, anonimo: false } : { text: r.text || '', anonimo: !!r.anonimo });
+  });
+
+  function renderGroup(key){
+    const cat = TARGET_CATEGORIES.find(c => c.key === key);
+    const groupEl = card.querySelector('#group_' + key);
+    groupEl.querySelectorAll('.row').forEach(r=>r.remove());
+    data[key].forEach((item, idx) => {
+      const row = el(`
+        <div class="row">
+          <input type="text" value="${escapeHtml(item.text)}" placeholder="${cat.placeholder}" />
+          <label class="anon-toggle">
+            <input type="checkbox" ${item.anonimo ? 'checked' : ''} data-anon="${key}:${idx}" />
+            Anônimo
+          </label>
+          ${data[key].length > 1 ? `<button class="btn-ghost btn-small" data-remove="${key}:${idx}">remover</button>` : ''}
+        </div>
+      `);
+      row.querySelector('input[type="text"]').addEventListener('input', e => { data[key][idx].text = e.target.value; });
+      row.querySelector('input[type="checkbox"]').addEventListener('change', e => { data[key][idx].anonimo = e.target.checked; });
+      groupEl.appendChild(row);
+    });
+
+    const addBtn = card.querySelector(`[data-add="${key}"]`);
+    const limitMsg = card.querySelector('#limit_' + key);
+    const atLimit = data[key].length >= MAX_ALVOS_POR_CATEGORIA;
+    addBtn.classList.toggle('hidden', atLimit);
+    limitMsg.textContent = atLimit ? `Limite de ${MAX_ALVOS_POR_CATEGORIA} alvos nesta categoria atingido.` : '';
+  }
+  TARGET_CATEGORIES.forEach(cat => renderGroup(cat.key));
+
+  card.addEventListener('click', (e) => {
+    if(e.target.dataset.add){
+      const key = e.target.dataset.add;
+      if(data[key].length >= MAX_ALVOS_POR_CATEGORIA) return;
+      data[key].push({ text: '', anonimo: false });
+      renderGroup(key);
+    }
+    if(e.target.dataset.remove){
+      const [key, idx] = e.target.dataset.remove.split(':');
+      data[key].splice(Number(idx),1);
+      renderGroup(key);
+    }
+  });
+
+  card.querySelector('#saveTargetsBtn').addEventListener('click', async () => {
+    const payload = {};
+    let total = 0;
+    TARGET_CATEGORIES.forEach(cat => {
+      payload[cat.key] = data[cat.key]
+        .map(item => ({ text: item.text.trim(), anonimo: !!item.anonimo }))
+        .filter(item => item.text)
+        .slice(0, MAX_ALVOS_POR_CATEGORIA);
+      total += payload[cat.key].length;
+    });
+    const msgEl = card.querySelector('#targetsMsg');
+    if(total < 1){
+      msgEl.innerHTML = `<div class="msg err">Informe pelo menos 1 alvo em alguma das categorias.</div>`;
+      return;
+    }
+    const btn = card.querySelector('#saveTargetsBtn');
+    btn.disabled = true; btn.textContent = 'Salvando...';
+    const ok = await saveTargets(state.name, payload);
+    btn.disabled = false; btn.textContent = 'Salvar meus alvos';
+    if(ok){
+      state.targets = payload;
+      msgEl.innerHTML = `<div class="msg ok">Alvos salvos com sucesso.</div>`;
+    } else if(!storageAvailable()){
+      msgEl.innerHTML = `<div class="msg err">Este link precisa ser aberto como um artefato ativo do Claude (não como arquivo .html baixado) para poder salvar dados. Confirme que está usando o link compartilhado do Claude.</div>`;
+    } else {
+      msgEl.innerHTML = `<div class="msg err">Não foi possível salvar agora. Tente novamente.</div>`;
+    }
+  });
+
+  return card;
+}
+
+
+function renderRegisterCard(){
+  if(!state.targets){
+    return el(`
+      <div class="card">
+        <h2>Registrar Oração</h2>
+        <p class="sub">Cadastre primeiro seus alvos na aba "Meus Alvos" para começar a registrar seu tempo de oração.</p>
+      </div>
+    `);
+  }
+
+  const card = el(`
+    <div class="card">
+      <h2>Cronômetro de Oração</h2>
+      <p class="sub">Inicie o cronômetro enquanto ora, ou registre o tempo manualmente logo abaixo.</p>
+
+      <div class="group-total-box">
+        <div class="lbl">Relógio total de todos</div>
+        <div class="group-total-display" id="groupTotalDisplay">carregando...</div>
+      </div>
+
+      <div class="timer-display" id="timerDisplay">00:00:00</div>
+      <div class="timer-controls">
+        <button class="btn-primary" id="startPauseBtn">Iniciar</button>
+        <button class="btn-ghost" id="resetBtn">Zerar</button>
+      </div>
+      <div style="text-align:center">
+        <button class="btn-primary" id="saveTimerBtn" ${state.timerSeconds===0 ? 'disabled':''}>Registrar este tempo</button>
+      </div>
+
+      <div class="divider-text">ou registre manualmente em horas e minutos</div>
+      <div class="manual-row">
+        <div>
+          <label>Horas</label>
+          <input type="number" id="manualHours" min="0" value="0" />
+        </div>
+        <div>
+          <label>Minutos</label>
+          <input type="number" id="manualMinutes" min="0" max="59" value="0" />
+        </div>
+      </div>
+      <div style="margin-top:14px">
+        <button class="btn-primary" id="saveManualBtn">Registrar tempo manual</button>
+      </div>
+      <div id="registerMsg"></div>
+
+      <div style="margin-top:26px">
+        <p class="sub" style="margin-bottom:8px">Seus alvos, para lembrar enquanto ora:</p>
+        <div class="chips">
+          ${TARGET_CATEGORIES.map(cat => (state.targets[cat.key]||[]).map(t=>
+            `<span class="chip ${cat.chipClass}${t.anonimo ? ' is-anon' : ''}">${escapeHtml(t.text)}${t.anonimo ? '<span class="anon-tag">anônimo</span>' : ''}</span>`
+          ).join('')).join('')}
+        </div>
+      </div>
+    </div>
+  `);
+
+  const groupTotalDisplay = card.querySelector('#groupTotalDisplay');
+  function refreshGroupTotal(){
+    getGroupGrandTotal().then(total => {
+      groupTotalDisplay.textContent = minToHM(total);
+    }).catch(() => { groupTotalDisplay.textContent = '—'; });
+  }
+  refreshGroupTotal();
+
+  const display = card.querySelector('#timerDisplay');
+  const startPauseBtn = card.querySelector('#startPauseBtn');
+  const saveTimerBtn = card.querySelector('#saveTimerBtn');
+
+  function updateDisplay(){ display.textContent = fmtClock(state.timerSeconds); }
+  updateDisplay();
+
+  startPauseBtn.addEventListener('click', () => {
+    if(state.timerRunning){
+      stopTimer();
+      startPauseBtn.textContent = 'Continuar';
+    } else {
+      state.timerRunning = true;
+      state.timerInterval = setInterval(() => {
+        state.timerSeconds++;
+        updateDisplay();
+        saveTimerBtn.disabled = false;
+      }, 1000);
+      startPauseBtn.textContent = 'Pausar';
+    }
+  });
+
+  card.querySelector('#resetBtn').addEventListener('click', () => {
+    stopTimer();
+    state.timerSeconds = 0;
+    updateDisplay();
+    startPauseBtn.textContent = 'Iniciar';
+    saveTimerBtn.disabled = true;
+  });
+
+  saveTimerBtn.addEventListener('click', async () => {
+    const minutes = Math.max(1, Math.round(state.timerSeconds/60));
+    await doSave(minutes, card);
+    stopTimer();
+    state.timerSeconds = 0;
+    updateDisplay();
+    startPauseBtn.textContent = 'Iniciar';
+    saveTimerBtn.disabled = true;
+  });
+
+  card.querySelector('#saveManualBtn').addEventListener('click', async () => {
+    const h = Number(card.querySelector('#manualHours').value) || 0;
+    const m = Number(card.querySelector('#manualMinutes').value) || 0;
+    const total = h*60 + m;
+    if(total <= 0){
+      card.querySelector('#registerMsg').innerHTML = `<div class="msg err">Informe um tempo maior que zero.</div>`;
+      return;
+    }
+    await doSave(total, card);
+    card.querySelector('#manualHours').value = 0;
+    card.querySelector('#manualMinutes').value = 0;
+  });
+
+  async function doSave(minutes, cardEl){
+    const msgEl = cardEl.querySelector('#registerMsg');
+    msgEl.innerHTML = `<div class="loading">Salvando...</div>`;
+    const todayTotal = await addPrayerMinutes(state.name, minutes);
+    msgEl.innerHTML = `<div class="msg ok">${minToHM(minutes)} registrados. Seu total de hoje: ${minToHM(todayTotal)}.</div>`;
+    refreshGroupTotal();
+  }
+
+  return card;
+}
+
+function stopTimer(){
+  state.timerRunning = false;
+  if(state.timerInterval){ clearInterval(state.timerInterval); state.timerInterval = null; }
+}
+
+function renderAchievementsCard(){
+  const card = el(`
+    <div class="card">
+      <h2>Alvos Conquistados</h2>
+      <p class="sub">Registre um alvo respondido em oração e compartilhe uma foto de testemunho com o grupo.</p>
+
+      <label>Qual alvo foi conquistado?</label>
+      <div class="row" id="targetPickerRow" style="margin-bottom:14px"></div>
+
+      <label>Foto do testemunho</label>
+      <div class="row" style="margin-bottom:6px">
+        <input type="file" id="photoInput" accept="image/*" style="flex:1; padding:8px 0; color: var(--text-muted); font-size:13px;" />
+      </div>
+      <div id="photoPreviewWrap"></div>
+
+      <label style="margin-top:14px">Testemunho (opcional)</label>
+      <textarea id="captionInput" rows="3" placeholder="Conte brevemente como Deus respondeu..." style="resize:vertical;"></textarea>
+
+      <div style="margin-top:16px">
+        <button class="btn-primary" id="postAchievementBtn">Publicar conquista</button>
+      </div>
+      <div id="achievementMsg"></div>
+
+      <div class="divider-text">mural de conquistas</div>
+      <div id="achievementsWall"><div class="loading">Carregando conquistas...</div></div>
+    </div>
+  `);
+
+  const targets = [];
+  TARGET_CATEGORIES.forEach(cat => {
+    ((state.targets && state.targets[cat.key]) || []).forEach(t => targets.push(t.text));
+  });
+  const pickerRow = card.querySelector('#targetPickerRow');
+  if(targets.length){
+    pickerRow.innerHTML = `
+      <select id="targetSelect">
+        ${targets.map(t => `<option value="${escapeHtml(t)}">${escapeHtml(t)}</option>`).join('')}
+        <option value="__other__">Outro alvo...</option>
+      </select>
+    `;
+    const otherInput = el(`<input type="text" id="targetOther" placeholder="Digite o alvo conquistado" style="display:none; margin-top:8px" />`);
+    pickerRow.appendChild(otherInput);
+    pickerRow.querySelector('#targetSelect').addEventListener('change', e => {
+      otherInput.style.display = e.target.value === '__other__' ? 'block' : 'none';
+    });
+  } else {
+    pickerRow.innerHTML = `<input type="text" id="targetOther" placeholder="Digite o alvo conquistado" />`;
+  }
+
+  let compressedPhoto = null;
+  const previewWrap = card.querySelector('#photoPreviewWrap');
+  card.querySelector('#photoInput').addEventListener('change', async (e) => {
+    const file = e.target.files[0];
+    if(!file) return;
+    previewWrap.innerHTML = `<div class="loading">Processando foto...</div>`;
+    try{
+      compressedPhoto = await compressImage(file, 900);
+      previewWrap.innerHTML = `<img src="${compressedPhoto}" style="max-width:100%; border-radius:4px; margin-top:8px; border:1px solid var(--border);" />`;
+    }catch(err){
+      compressedPhoto = null;
+      previewWrap.innerHTML = `<div class="msg err">Não foi possível processar essa foto. Tente outra.</div>`;
+    }
+  });
+
+  card.querySelector('#postAchievementBtn').addEventListener('click', async () => {
+    const msgEl = card.querySelector('#achievementMsg');
+    const select = card.querySelector('#targetSelect');
+    const otherInput = card.querySelector('#targetOther');
+    let target = select ? select.value : '';
+    if(target === '__other__' || !select) target = (otherInput ? otherInput.value.trim() : '');
+    if(!target){
+      msgEl.innerHTML = `<div class="msg err">Informe qual alvo foi conquistado.</div>`;
+      return;
+    }
+    const caption = card.querySelector('#captionInput').value.trim();
+    const btn = card.querySelector('#postAchievementBtn');
+    btn.disabled = true; btn.textContent = 'Publicando...';
+    const ok = await addAchievement(state.name, state.discipulador, target, caption, compressedPhoto);
+    btn.disabled = false; btn.textContent = 'Publicar conquista';
+    if(ok){
+      msgEl.innerHTML = `<div class="msg ok">Conquista publicada no mural!</div>`;
+      card.querySelector('#captionInput').value = '';
+      card.querySelector('#photoInput').value = '';
+      previewWrap.innerHTML = '';
+      compressedPhoto = null;
+      renderWall();
+    } else if(!storageAvailable()){
+      msgEl.innerHTML = `<div class="msg err">Este link precisa ser aberto como um artefato ativo do Claude para poder salvar dados.</div>`;
+    } else {
+      msgEl.innerHTML = `<div class="msg err">Não foi possível publicar agora. Tente novamente.</div>`;
+    }
+  });
+
+  function renderWall(){
+    const wall = card.querySelector('#achievementsWall');
+    loadAchievements(24).then(items => {
+      if(!items.length){
+        wall.innerHTML = `<p class="sub" style="margin:0">Ainda não há conquistas publicadas. Seja a primeira pessoa a compartilhar!</p>`;
+        return;
+      }
+      wall.innerHTML = `<div class="achv-grid">${items.map(a => `
+        <div class="achv-card">
+          ${a.photo ? `<img src="${a.photo}" alt="Foto do alvo conquistado" />` : `<div class="achv-noimg">🙏</div>`}
+          <div class="achv-body">
+            <div class="achv-target">${escapeHtml(a.target)}</div>
+            ${a.caption ? `<div class="achv-caption">${escapeHtml(a.caption)}</div>` : ''}
+            <div class="achv-meta">${escapeHtml(a.name)}${a.discipulador ? ' · ' + escapeHtml(a.discipulador) : ''} · ${fmtDate(a.date)}</div>
+          </div>
+        </div>
+      `).join('')}</div>`;
+    }).catch(() => {
+      wall.innerHTML = `<div class="msg err">Não foi possível carregar o mural agora.</div>`;
+    });
+  }
+  renderWall();
+
+  return card;
+}
+
+function renderAllTargetsCard(){
+  const card = el(`
+    <div class="card">
+      <h2>Todos os Alvos de Oração</h2>
+      <p class="sub">Lista consolidada de Pessoas, Conquista e Ovelha Perdida cadastrados pelo grupo. Alvos marcados como anônimos aparecem sem o nome de quem registrou.</p>
+      <button class="btn-primary" id="exportSheetBtn" style="margin-bottom:16px">Gerar planilha completa (.xlsx)</button>
+      <input type="text" id="allTargetsSearch" placeholder="Buscar por nome do alvo ou da pessoa..." style="margin-bottom:16px" />
+      <div id="allTargetsBody"><div class="loading">Carregando alvos...</div></div>
+    </div>
+  `);
+
+  let allItems = [];
+
+  function attribution(r){
+    if(r.anonimo) return `<span style="font-style:italic">Anônimo</span>`;
+    return `${escapeHtml(r.name)}${r.discipulador ? ' · '+escapeHtml(r.discipulador) : ''}`;
+  }
+
+  function renderLists(filter){
+    const q = (filter || '').trim().toLowerCase();
+    const rowsByCat = {};
+    TARGET_CATEGORIES.forEach(cat => { rowsByCat[cat.key] = []; });
+
+    allItems.forEach(item => {
+      TARGET_CATEGORIES.forEach(cat => {
+        (item[cat.key] || []).forEach(t => {
+          if(!q || t.text.toLowerCase().includes(q) || item.name.toLowerCase().includes(q)){
+            rowsByCat[cat.key].push({ target: t.text, anonimo: !!t.anonimo, name: item.name, discipulador: item.discipulador });
+          }
+        });
+      });
+    });
+
+    const totalRows = TARGET_CATEGORIES.reduce((sum, cat) => sum + rowsByCat[cat.key].length, 0);
+    const body = card.querySelector('#allTargetsBody');
+    body.innerHTML = `
+      <p class="sub" style="margin:0 0 6px">${allItems.length} pessoa${allItems.length===1?'':'s'} cadastrada${allItems.length===1?'':'s'} · ${totalRows} alvo${totalRows===1?'':'s'} no total</p>
+      ${TARGET_CATEGORIES.map(cat => `
+        <div class="target-group" style="margin-top:20px">
+          <h3>${cat.label} (${rowsByCat[cat.key].length})</h3>
+          <table>
+            <tbody>
+              ${rowsByCat[cat.key].map(r => `
+                <tr>
+                  <td>${escapeHtml(r.target)}</td>
+                  <td style="color:var(--text-muted); font-size:12px; text-align:right">${attribution(r)}</td>
+                </tr>
+              `).join('') || '<tr><td>Nenhum alvo encontrado.</td></tr>'}
+            </tbody>
+          </table>
+        </div>
+      `).join('')}
+    `;
+  }
+
+  loadAllTargets().then(items => {
+    allItems = items;
+    renderLists('');
+  }).catch(() => {
+    card.querySelector('#allTargetsBody').innerHTML = `<div class="msg err">Não foi possível carregar os alvos agora.</div>`;
+  });
+
+  card.querySelector('#allTargetsSearch').addEventListener('input', e => renderLists(e.target.value));
+
+  card.querySelector('#exportSheetBtn').addEventListener('click', () => {
+    if(!allItems.length){
+      alert('Ainda não há alvos cadastrados para exportar.');
+      return;
+    }
+    downloadTargetsWorkbook(targetsToExportRows(allItems, { anonymize: true }), 'alvos-lancando-as-redes.xlsx');
+  });
+
+  return card;
+}
+
+function renderPanelCard(){
+  const card = el(`
+    <div class="card">
+      <h2>Painel Geral</h2>
+      <p class="sub">Somatório automático do tempo de oração de todos os participantes.</p>
+      <div id="panelBody"><div class="loading">Carregando estatísticas...</div></div>
+    </div>
+  `);
+
+  loadDashboard(state.name).then(d => {
+    const body = card.querySelector('#panelBody');
+    body.innerHTML = `
+      <div class="stats-grid">
+        <div class="stat-box">
+          <div class="num">${minToHM(d.todayGroupTotal)}</div>
+          <div class="lbl">Total do grupo hoje (${d.participantsToday} pessoa${d.participantsToday===1?'':'s'})</div>
+        </div>
+        <div class="stat-box">
+          <div class="num">${minToHM(d.yourToday)}</div>
+          <div class="lbl">Seu total hoje</div>
+        </div>
+        <div class="stat-box">
+          <div class="num">${minToHM(d.yourTotal)}</div>
+          <div class="lbl">Seu total geral</div>
+        </div>
+        <div class="stat-box">
+          <div class="num">${minToHM(d.grandTotal)}</div>
+          <div class="lbl">Total geral do grupo</div>
+        </div>
+      </div>
+      <table>
+        <thead><tr><th>Participante</th><th>Tempo total</th></tr></thead>
+        <tbody>
+          ${d.ranking.map(([name, min]) => `
+            <tr>
+              <td class="${name===state.name ? 'rank-you' : 'rank-name'}">${escapeHtml(name)}${name===state.name ? ' (você)' : ''}${d.discipuladorMap[name] ? `<br><span style="color:var(--text-muted); font-size:11px;">${escapeHtml(d.discipuladorMap[name])}</span>` : ''}</td>
+              <td>${minToHM(min)}</td>
+            </tr>
+          `).join('') || '<tr><td colspan="2">Ainda não há registros.</td></tr>'}
+        </tbody>
+      </table>
+
+      <div class="divider-text">ranking por discipulador</div>
+      <table>
+        <thead><tr><th>Discipulador</th><th>Participantes</th><th>Tempo total</th></tr></thead>
+        <tbody>
+          ${d.groupRanking.map(([group, min]) => `
+            <tr>
+              <td class="${group===state.discipulador ? 'rank-you' : 'rank-name'}">${escapeHtml(group)}${group===state.discipulador ? ' (seu grupo)' : ''}</td>
+              <td>${d.groupCounts[group]}</td>
+              <td>${minToHM(min)}</td>
+            </tr>
+          `).join('') || '<tr><td colspan="3">Ainda não há registros.</td></tr>'}
+        </tbody>
+      </table>
+      <div style="margin-top:16px; text-align:right">
+        <button class="btn-ghost btn-small" id="refreshBtn">Atualizar</button>
+      </div>
+    `;
+    body.querySelector('#refreshBtn').addEventListener('click', () => render());
+  }).catch(() => {
+    card.querySelector('#panelBody').innerHTML = `<div class="msg err">Não foi possível carregar o painel agora.</div>`;
+  });
+
+  return card;
+}
+
+function renderAdminPanel(){
+  const scope = state.adminScope; // null = admin master (vê tudo); string = só esse discipulador
+
+  const card = el(`
+    <div class="card">
+      <h2>${scope ? `Painel do Discipulador` : 'Painel do Obreiro'}</h2>
+      <p class="sub">${scope
+        ? `Você está vendo apenas os discípulos de <b>${escapeHtml(scope)}</b>. Alvos marcados como anônimos para o grupo aparecem aqui com o nome real, para acompanhamento pastoral.`
+        : 'Resumo geral de todas as pessoas, alvos e tempo de oração. Alvos marcados como anônimos para o grupo aparecem aqui com o nome real, para acompanhamento pastoral.'}</p>
+      <div id="adminExportImportSlot"></div>
+      ${scope ? '' : `
+      <div class="row" style="margin-bottom:6px">
+        <select id="discipuladorFilter">
+          <option value="">Todos os discipuladores</option>
+          ${DISCIPULADORES.map(d => `<option value="${escapeHtml(d)}">${escapeHtml(d)}</option>`).join('')}
+          <option value="__sem__">Sem discipulador informado</option>
+        </select>
+      </div>`}
+      <input type="text" id="adminSearch" placeholder="Buscar por nome da pessoa ou do alvo..." style="margin-bottom:16px" />
+      <div id="adminBody"><div class="loading">Carregando painel...</div></div>
+    </div>
+  `);
+
+  // Backup completo (usuários/senhas de todo mundo) só faz sentido pro admin master.
+  if(!scope){
+    card.querySelector('#adminExportImportSlot').appendChild(renderFullBackupBox());
+  }
+
+  card.querySelector('#adminExportImportSlot').appendChild(
+    renderTargetsExportImport(
+      async () => {
+        const items = await loadAllTargets();
+        const filtered = scope ? items.filter(t => t.discipulador === scope) : items;
+        return targetsToExportRows(filtered, { anonymize: false });
+      },
+      scope ? `alvos-${slugKey(scope)}.xlsx` : 'alvos-lancando-as-redes.xlsx'
+    )
+  );
+
+  let overview = null;
+
+  function personMatchesFilter(p, discFilter){
+    if(scope) return p.discipulador === scope;
+    if(!discFilter) return true;
+    if(discFilter === '__sem__') return !p.discipulador;
+    return p.discipulador === discFilter;
+  }
+
+  function personMatchesSearch(p, q){
+    if(!q) return true;
+    if(p.name.toLowerCase().includes(q)) return true;
+    return [...p.pessoas, ...p.conquista, ...p.ovelhaPerdida].some(t => t.text.toLowerCase().includes(q));
+  }
+
+  function targetsHtml(items, cls){
+    if(!items.length) return `<span style="color:var(--text-muted); font-size:12px;">—</span>`;
+    return `<div class="chips" style="margin-top:4px">${items.map(t =>
+      `<span class="chip ${cls}${t.anonimo ? ' is-anon' : ''}">${escapeHtml(t.text)}${t.anonimo ? '<span class="anon-tag">anônimo p/ grupo</span>' : ''}</span>`
+    ).join('')}</div>`;
+  }
+
+  function renderBody(){
+    const discFilterEl = card.querySelector('#discipuladorFilter');
+    const discFilter = discFilterEl ? discFilterEl.value : '';
+    const q = card.querySelector('#adminSearch').value.trim().toLowerCase();
+    const people = overview.people.filter(p => personMatchesFilter(p, discFilter) && personMatchesSearch(p, q));
+
+    const filteredMinutes = people.reduce((a,p)=>a+p.totalMinutes,0);
+    const filteredTargets = people.reduce((a,p)=>a+p.pessoas.length+p.conquista.length+p.ovelhaPerdida.length,0);
+    const filteredAchievements = people.reduce((a,p)=>a+p.achievementsCount,0);
+
+    const body = card.querySelector('#adminBody');
+    body.innerHTML = `
+      <div class="stats-grid">
+        <div class="stat-box">
+          <div class="num">${people.length}</div>
+          <div class="lbl">Pessoas (nesta seleção)</div>
+        </div>
+        <div class="stat-box">
+          <div class="num">${minToHM(filteredMinutes)}</div>
+          <div class="lbl">Tempo total de oração</div>
+        </div>
+        <div class="stat-box">
+          <div class="num">${filteredTargets}</div>
+          <div class="lbl">Alvos cadastrados</div>
+        </div>
+        <div class="stat-box">
+          <div class="num">${filteredAchievements}</div>
+          <div class="lbl">Conquistas publicadas</div>
+        </div>
+      </div>
+
+      ${people.map(p => `
+        <div class="target-group" style="border:1px solid var(--border); border-radius:var(--radius-sm); padding:16px 18px; margin-bottom:14px; background: var(--bg-panel-2); transition: border-color 0.2s;">
+          <h3 style="display:flex; justify-content:space-between; align-items:center; margin-bottom:2px;">
+            <span>${escapeHtml(p.name)}</span>
+            <span style="font-size:12px; color:var(--text-muted); font-weight:500;">${minToHM(p.totalMinutes)} · ${p.achievementsCount} conquista${p.achievementsCount===1?'':'s'}</span>
+          </h3>
+          <p class="sub" style="margin:0 0 10px; display:flex; justify-content:space-between; align-items:center; gap:10px;">
+            <span>${p.discipulador ? escapeHtml(p.discipulador) : 'Sem discipulador informado'}</span>
+            <button class="btn-ghost btn-small" data-reset="${escapeHtml(p.name)}">Resetar senha</button>
+          </p>
+          <p class="sub" style="margin:0 0 2px; font-size:12px;">Pessoas</p>
+          ${targetsHtml(p.pessoas, 'pessoa')}
+          <p class="sub" style="margin:10px 0 2px; font-size:12px;">Conquista</p>
+          ${targetsHtml(p.conquista, 'conquista')}
+          <p class="sub" style="margin:10px 0 2px; font-size:12px;">Ovelha Perdida</p>
+          ${targetsHtml(p.ovelhaPerdida, 'perdido')}
+        </div>
+      `).join('') || '<p class="sub">Ninguém encontrado com esse filtro.</p>'}
+    `;
+
+    body.querySelectorAll('[data-reset]').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const name = btn.dataset.reset;
+        if(!confirm(`Resetar a senha de ${name}? Os alvos e o tempo de oração dela continuam salvos normalmente — ela só vai precisar criar uma senha nova no próximo acesso.`)) return;
+        btn.disabled = true; btn.textContent = 'Resetando...';
+        await resetCredential(name);
+        btn.textContent = 'Senha resetada ✓';
+      });
+    });
+  }
+
+  loadAdminOverview().then(o => {
+    overview = o;
+    renderBody();
+  }).catch(() => {
+    card.querySelector('#adminBody').innerHTML = `<div class="msg err">Não foi possível carregar o painel agora.</div>`;
+  });
+
+  const discFilterEl2 = card.querySelector('#discipuladorFilter');
+  if(discFilterEl2) discFilterEl2.addEventListener('change', () => { if(overview) renderBody(); });
+  card.querySelector('#adminSearch').addEventListener('input', () => { if(overview) renderBody(); });
+
+  return card;
+}
+
+render();
+</script>
+</body>
+</html>
