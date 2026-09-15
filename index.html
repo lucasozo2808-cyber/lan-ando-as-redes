@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
@@ -401,8 +401,6 @@ tbody tr:hover{ background: rgba(227,166,64,0.05); }
 }
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 </head>
 <body>
 <header>
@@ -426,12 +424,13 @@ tbody tr:hover{ background: rgba(227,166,64,0.05); }
   <footer class="site-footer">Lançando as Redes — Rede Metanoia</footer>
 </div>
 
-<script>
-// ---- Firebase: banco de dados real (Firestore) no lugar do window.storage ----
-// Cada "chave" do app antigo (ex: 'targets:maria_silva', 'prayer-totals') vira
-// um documento na coleção "kv", com o valor salvo (em JSON) no campo "value".
-// Isso preserva 100% da lógica do app (login, alvos, tempo de oração,
-// conquistas, backup) — só troca ONDE os dados ficam guardados.
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+import { getFirestore, doc, getDoc, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+
+// Configuração do projeto Firebase (Lançando as Redes). Essas chaves não são
+// segredo: ficam expostas no front-end de qualquer app Firebase. A proteção
+// real vem das Regras de Segurança configuradas no console do Firestore.
 const firebaseConfig = {
   apiKey: "AIzaSyCInYGlsonTgwoGPANPev0Eehbj_tVDlrI",
   authDomain: "lancando-as-redes-6abde.firebaseapp.com",
@@ -441,9 +440,8 @@ const firebaseConfig = {
   appId: "1:376480483053:web:4bd7bffba1e77ee02f6ee4",
   measurementId: "G-G6CKN78L0B"
 };
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
-const KV_COLLECTION = 'kv';
+const firebaseApp = initializeApp(firebaseConfig);
+const db = getFirestore(firebaseApp);
 
 const DISCIPULADORES = [
   'Lucas Claudino',
@@ -532,32 +530,27 @@ function el(html){
   return t.content.firstChild;
 }
 
-function storageAvailable(){
-  return db !== null && typeof db !== 'undefined';
-}
-
+// Toda leitura/escrita de dados do app passa por aqui. Por baixo dos panos
+// isso agora é o Firestore (coleção "appdata", um documento por chave), mas
+// o resto do app continua chamando getJSON/setJSON exatamente como antes —
+// então praticamente nenhuma outra função precisou mudar nessa migração.
 async function getJSON(key, fallback){
-  if(!storageAvailable()) return fallback;
   try{
-    const doc = await db.collection(KV_COLLECTION).doc(key).get();
-    if(!doc.exists) return fallback;
-    const data = doc.data();
-    return (data && typeof data.value === 'string') ? JSON.parse(data.value) : fallback;
-  }catch(e){ console.error('storage error', e); return fallback; }
+    const snap = await getDoc(doc(db, 'kv', key));
+    return snap.exists() ? JSON.parse(snap.data().value) : fallback;
+  }catch(e){ console.error('firestore get error', key, e); return fallback; }
 }
 async function setJSON(key, value){
-  if(!storageAvailable()) return false;
   try{
-    await db.collection(KV_COLLECTION).doc(key).set({ value: JSON.stringify(value) });
+    await setDoc(doc(db, 'kv', key), { value: JSON.stringify(value) });
     return true;
-  }catch(e){ console.error('storage error', e); return false; }
+  }catch(e){ console.error('firestore set error', key, e); return false; }
 }
 async function deleteKey(key){
-  if(!storageAvailable()) return false;
   try{
-    await db.collection(KV_COLLECTION).doc(key).delete();
+    await deleteDoc(doc(db, 'kv', key));
     return true;
-  }catch(e){ console.error('storage error', e); return false; }
+  }catch(e){ console.error('firestore delete error', key, e); return false; }
 }
 
 function todayStr(){
@@ -625,14 +618,13 @@ async function getGroupGrandTotal(){
 }
 
 async function resetAllPrayerHours(){
-  if(!storageAvailable()) return false;
   try{
     const dates = await getJSON('prayer-dates', []);
     for(const d of dates){
-      try{ await deleteKey('prayer-stats:'+d); }catch(e){}
+      await deleteKey('prayer-stats:'+d);
     }
-    try{ await deleteKey('prayer-totals'); }catch(e){}
-    try{ await deleteKey('prayer-dates'); }catch(e){}
+    await deleteKey('prayer-totals');
+    await deleteKey('prayer-dates');
     return true;
   }catch(e){ console.error('reset error', e); return false; }
 }
@@ -653,6 +645,17 @@ async function addPrayerMinutes(name, minutes){
     await setJSON('prayer-dates', dates);
   }
   return daily[name];
+}
+
+// Correção manual feita pelo obreiro/discipulador: sobrescreve o TOTAL geral
+// de oração de uma pessoa (útil quando alguém digitou errado, ex: 30h em vez
+// de 30min). Não mexe no histórico diário — só corrige o total mostrado nos
+// rankings e no painel.
+async function setPrayerTotal(name, minutes){
+  const totals = await getJSON('prayer-totals', {});
+  totals[name] = Math.max(0, Math.round(minutes));
+  await setJSON('prayer-totals', totals);
+  return totals[name];
 }
 
 function compressImage(file, maxWidth){
@@ -1469,10 +1472,8 @@ function renderTargetsCard(){
     if(ok){
       state.targets = payload;
       msgEl.innerHTML = `<div class="msg ok">Alvos salvos com sucesso.</div>`;
-    } else if(!storageAvailable()){
-      msgEl.innerHTML = `<div class="msg err">Este link precisa ser aberto como um artefato ativo do Claude (não como arquivo .html baixado) para poder salvar dados. Confirme que está usando o link compartilhado do Claude.</div>`;
     } else {
-      msgEl.innerHTML = `<div class="msg err">Não foi possível salvar agora. Tente novamente.</div>`;
+      msgEl.innerHTML = `<div class="msg err">Não foi possível salvar agora. Verifique sua internet e tente novamente.</div>`;
     }
   });
 
@@ -1699,10 +1700,8 @@ function renderAchievementsCard(){
       previewWrap.innerHTML = '';
       compressedPhoto = null;
       renderWall();
-    } else if(!storageAvailable()){
-      msgEl.innerHTML = `<div class="msg err">Este link precisa ser aberto como um artefato ativo do Claude para poder salvar dados.</div>`;
     } else {
-      msgEl.innerHTML = `<div class="msg err">Não foi possível publicar agora. Tente novamente.</div>`;
+      msgEl.innerHTML = `<div class="msg err">Não foi possível publicar agora. Verifique sua internet e tente novamente.</div>`;
     }
   });
 
@@ -1972,9 +1971,12 @@ function renderAdminPanel(){
             <span>${escapeHtml(p.name)}</span>
             <span style="font-size:12px; color:var(--text-muted); font-weight:500;">${minToHM(p.totalMinutes)} · ${p.achievementsCount} conquista${p.achievementsCount===1?'':'s'}</span>
           </h3>
-          <p class="sub" style="margin:0 0 10px; display:flex; justify-content:space-between; align-items:center; gap:10px;">
+          <p class="sub" style="margin:0 0 10px; display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap;">
             <span>${p.discipulador ? escapeHtml(p.discipulador) : 'Sem discipulador informado'}</span>
-            <button class="btn-ghost btn-small" data-reset="${escapeHtml(p.name)}">Resetar senha</button>
+            <span style="display:flex; gap:6px; flex-wrap:wrap;">
+              <button class="btn-ghost btn-small" data-adjust="${escapeHtml(p.name)}">Ajustar tempo</button>
+              <button class="btn-ghost btn-small" data-reset="${escapeHtml(p.name)}">Resetar senha</button>
+            </span>
           </p>
           <p class="sub" style="margin:0 0 2px; font-size:12px;">Pessoas</p>
           ${targetsHtml(p.pessoas, 'pessoa')}
@@ -1985,6 +1987,25 @@ function renderAdminPanel(){
         </div>
       `).join('') || '<p class="sub">Ninguém encontrado com esse filtro.</p>'}
     `;
+
+    body.querySelectorAll('[data-adjust]').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const name = btn.dataset.adjust;
+        const person = people.find(p => p.name === name);
+        const current = person ? person.totalMinutes : 0;
+        const input = prompt(`Novo tempo TOTAL de oração de ${name} (em minutos).\nAtual: ${minToHM(current)} (${current} min).\n\nDigite o valor correto em minutos:`, String(current));
+        if(input === null) return; // cancelado
+        const newMinutes = Number(input);
+        if(!Number.isFinite(newMinutes) || newMinutes < 0){
+          alert('Digite um número válido de minutos (0 ou mais).');
+          return;
+        }
+        btn.disabled = true; btn.textContent = 'Salvando...';
+        await setPrayerTotal(name, newMinutes);
+        overview = await loadAdminOverview();
+        renderBody();
+      });
+    });
 
     body.querySelectorAll('[data-reset]').forEach(btn => {
       btn.addEventListener('click', async () => {
