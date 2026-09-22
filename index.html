@@ -19,6 +19,8 @@
   --border: #2b3260;
   --success: #8ab692;
   --danger: #c96a5a;
+  --info: #7a96c9;
+  --violet: #b391d1;
   --radius: 14px;
   --radius-sm: 9px;
   --shadow-card: 0 14px 34px rgba(3,5,18,0.45), 0 1px 0 rgba(255,255,255,0.03) inset;
@@ -218,6 +220,70 @@ button:active{ transform: scale(0.97); }
 
 .hidden{ display:none !important; }
 
+/* Modal — ajustar tempo de oração */
+.modal-overlay{
+  position: fixed; inset: 0; z-index: 1000;
+  background: rgba(5,6,16,0.72);
+  backdrop-filter: blur(2px);
+  display:flex; align-items:flex-end; justify-content:center;
+  padding: 0;
+  animation: fadeIn 0.18s var(--ease);
+}
+@media (min-width: 560px){
+  .modal-overlay{ align-items:center; padding: 20px; }
+}
+@keyframes fadeIn{ from{ opacity:0 } to{ opacity:1 } }
+@keyframes sheetUp{ from{ transform: translateY(24px); opacity:0 } to{ transform: translateY(0); opacity:1 } }
+.modal-box{
+  width: 100%; max-width: 440px;
+  max-height: 92vh; overflow-y: auto;
+  background: linear-gradient(180deg, var(--bg-panel) 0%, rgba(23,28,56,0.98) 100%);
+  border: 1px solid var(--border);
+  border-top: 2px solid var(--accent);
+  border-radius: var(--radius) var(--radius) 0 0;
+  padding: 24px 22px 22px;
+  box-shadow: var(--shadow-card);
+  animation: sheetUp 0.22s var(--ease);
+}
+@media (min-width: 560px){
+  .modal-box{ border-radius: var(--radius); }
+}
+.modal-box h3{
+  font-family:'Fraunces', serif; font-weight:500; font-size:19px;
+  margin: 0 0 4px; color: var(--text);
+}
+.modal-tabs{
+  display:flex; gap:6px; margin: 16px 0 4px;
+  padding: 5px;
+  background: var(--bg-panel-2);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+}
+.modal-tab{
+  flex:1; background:none; border:none; color: var(--text-muted);
+  padding: 8px 10px; font-size: 12.5px; font-weight:600;
+  border-radius: 999px; white-space:nowrap;
+}
+.modal-tab.active{ color: #1a1508; background: linear-gradient(180deg, var(--accent-soft), var(--accent)); box-shadow: 0 4px 12px rgba(227,166,64,0.3); }
+.hm-row{ display:flex; gap:10px; }
+.hm-row > div{ flex:1; }
+.hm-row label{ margin-bottom:5px; }
+.modal-preview{
+  margin-top: 16px;
+  text-align:center;
+  background: rgba(227,166,64,0.08);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 12px;
+  font-size: 14px;
+  color: var(--text-muted);
+}
+.modal-preview b{ color: var(--accent-soft); font-size: 17px; }
+.modal-preview.is-warn{ border-color: rgba(201,106,90,0.35); color: var(--danger); }
+.modal-actions{
+  display:flex; gap:10px; justify-content:flex-end; margin-top: 20px;
+}
+
 .target-group{ margin-bottom: 22px; }
 .target-group h3{
   font-size: 13px; text-transform: none; color: var(--accent-soft);
@@ -318,19 +384,124 @@ nav.tabs button.active{ color: #1a1508; background: linear-gradient(180deg, var(
   border-radius: 3px; padding: 1px 6px; margin-left: 6px; font-style: normal;
 }
 
+.goal-box{
+  background: var(--bg-panel-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 16px 18px;
+  margin-bottom: 20px;
+}
+.goal-head{
+  display:flex; align-items:baseline; justify-content:space-between;
+  gap:10px; margin-bottom:10px;
+}
+.goal-lbl{
+  font-family:'Fraunces', serif;
+  font-size: 14.5px;
+  color: var(--text);
+  font-weight: 500;
+}
+.goal-pct{
+  font-size: 13px;
+  color: var(--accent);
+  font-weight: 700;
+  white-space: nowrap;
+}
+.goal-bar{
+  width:100%; height:10px;
+  background: rgba(255,255,255,0.06);
+  border-radius: 999px;
+  overflow:hidden;
+  border: 1px solid var(--border);
+}
+.goal-fill{
+  height:100%;
+  background: linear-gradient(90deg, var(--accent-soft), var(--accent));
+  border-radius: 999px;
+  transition: width 0.4s var(--ease);
+}
+.goal-foot{
+  margin-top: 10px;
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+.goal-foot b{ color: var(--accent-soft); }
+.goal-done{ color: var(--success) !important; font-weight: 600; }
+
 .stats-grid{
   display:grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 18px;
 }
+@media (min-width: 480px){
+  .stats-grid.cols-4{ grid-template-columns: repeat(4, 1fr); }
+}
 .stat-box{
+  position: relative;
   background: linear-gradient(160deg, var(--bg-panel-2), rgba(255,255,255,0.02));
   border:1px solid var(--border);
-  border-radius: var(--radius-sm); padding: 16px;
+  border-radius: var(--radius-sm); padding: 16px 16px 14px 18px;
   box-shadow: var(--shadow-soft);
+  overflow: hidden;
+  transition: transform 0.18s var(--ease), border-color 0.18s var(--ease);
 }
+.stat-box:hover{ transform: translateY(-2px); border-color: var(--stat-accent, var(--accent)); }
+.stat-box::before{
+  content:''; position:absolute; left:0; top:0; bottom:0; width:3px;
+  background: var(--stat-accent, var(--accent));
+}
+.stat-box .icon{ width:18px; height:18px; color: var(--stat-accent, var(--accent)); margin-bottom:9px; display:block; opacity:0.95; }
+.stat-box .icon svg{ width:100%; height:100%; display:block; }
 .stat-box .num{
-  font-family:'Fraunces', serif; font-size: 26px; color: var(--accent-soft);
+  font-family:'Fraunces', serif; font-size: 24px; color: var(--text); line-height:1.05;
+  font-variant-numeric: tabular-nums;
 }
-.stat-box .lbl{ font-size: 12px; color: var(--text-muted); margin-top:2px; }
+.stat-box .lbl{ font-size: 11.5px; color: var(--text-muted); margin-top:5px; line-height:1.35; }
+
+/* Ficha de pessoa no painel do obreiro/discipulador */
+.person-card{
+  border:1px solid var(--border); border-radius: var(--radius-sm);
+  padding: 16px 18px; margin-bottom: 12px; background: var(--bg-panel-2);
+  transition: border-color 0.18s var(--ease), box-shadow 0.18s var(--ease);
+}
+.person-card:hover{ border-color: rgba(227,166,64,0.32); box-shadow: var(--shadow-soft); }
+.person-head{ display:flex; align-items:flex-start; gap:12px; }
+.person-avatar{
+  flex:none; width:38px; height:38px; border-radius:50%;
+  background: linear-gradient(160deg, var(--accent-soft), var(--accent));
+  color:#1a1508; font-family:'Fraunces', serif; font-weight:600; font-size:15px;
+  display:flex; align-items:center; justify-content:center;
+}
+.person-info{ flex:1; min-width:0; }
+.person-info .name{ font-family:'Fraunces', serif; font-size: 16.5px; color: var(--text); word-break: break-word; }
+.person-meta{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-top:5px; }
+.disc-badge{
+  display:inline-flex; align-items:center; font-size:11px; font-weight:600;
+  padding:3px 10px; border-radius:999px; background: rgba(227,166,64,0.12);
+  color: var(--accent-soft); border:1px solid rgba(227,166,64,0.25); white-space:nowrap;
+}
+.disc-badge.is-empty{ background: rgba(201,106,90,0.1); color: var(--danger); border-color: rgba(201,106,90,0.25); }
+.person-stat{ display:inline-flex; align-items:center; gap:4px; font-size:11.5px; color: var(--text-muted); white-space:nowrap; }
+.person-stat svg{ width:12px; height:12px; flex:none; }
+.person-toolbar{ display:flex; gap:8px; flex-wrap:wrap; margin: 12px 0 2px; }
+.icon-btn{ display:inline-flex; align-items:center; gap:6px; }
+.icon-btn svg{ width:13px; height:13px; flex:none; }
+.person-targets{ margin-top: 4px; }
+.person-targets summary{
+  cursor:pointer; font-size:12.5px; color: var(--accent-soft); font-weight:600;
+  padding: 6px 0; list-style:none; display:flex; align-items:center; gap:7px;
+  -webkit-tap-highlight-color: transparent;
+}
+.person-targets summary::-webkit-details-marker{ display:none; }
+.person-targets summary::before{
+  content:''; width:0; height:0; flex:none;
+  border-top:4px solid transparent; border-bottom:4px solid transparent;
+  border-left:5px solid var(--accent);
+  transition: transform 0.18s var(--ease);
+}
+.person-targets[open] summary::before{ transform: rotate(90deg); }
+.target-cat{ margin-bottom:10px; }
+.target-cat:last-child{ margin-bottom:0; }
+.target-cat .cat-lbl{ font-size:11px; color:var(--text-muted); margin:0 0 4px; }
 
 table{ width:100%; border-collapse: collapse; font-size: 14px; }
 th{
@@ -483,7 +654,7 @@ const state = {
 async function saveDiscipuladorMap(name, discipulador){
   const map = await getJSON('discipulador-map', {});
   map[name] = discipulador;
-  await setJSON('discipulador-map', map);
+  return await setJSON('discipulador-map', map);
 }
 
 function simpleHash(str){
@@ -528,6 +699,25 @@ function el(html){
   const t = document.createElement('template');
   t.innerHTML = html.trim();
   return t.content.firstChild;
+}
+
+// Ícones de linha simples (mesmo traço do peixinho do cabeçalho), usados nos
+// painéis para deixar as ações e estatísticas mais fáceis de reconhecer.
+const ICONS = {
+  clock: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5v5l3.2 2"/></svg>`,
+  users: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8.3" r="3.1"/><path d="M2.8 19.5c0-3.5 2.8-6 6.2-6s6.2 2.5 6.2 6"/><path d="M16.2 8.6a3 3 0 1 1 2.9 3"/><path d="M15 13.7c2.6.5 4.2 2.5 4.2 5.8"/></svg>`,
+  target: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3.3"/><path d="M12 2.3v3M12 18.7v3M2.3 12h3M18.7 12h3"/></svg>`,
+  star: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M12 3.4l2.6 5.4 5.9.7-4.3 4.1 1.1 5.9L12 16.7l-5.3 2.8 1.1-5.9-4.3-4.1 5.9-.7L12 3.4z"/></svg>`,
+  edit: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20l0.8-3.6L15.4 6 18 8.6 7.4 19.2 4 20z"/><path d="M13.6 7.8l2.6 2.6"/></svg>`,
+  key: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15.3" r="3.1"/><path d="M10.2 13.1L17.8 5.5l2 2-2 2 1.6 1.6-2.5 2.5-1.6-1.6-2.7 2.7"/></svg>`,
+  swap: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7.5 17V4.5M7.5 4.5L4.3 7.7M7.5 4.5l3.2 3.2"/><path d="M16.5 7v12.5M16.5 19.5l3.2-3.2M16.5 19.5l-3.2-3.2"/></svg>`
+};
+function initials(name){
+  const parts = String(name).trim().split(/\s+/).filter(Boolean);
+  if(!parts.length) return '?';
+  const first = parts[0][0] || '';
+  const last = parts.length > 1 ? (parts[parts.length-1][0] || '') : '';
+  return (first + last).toUpperCase();
 }
 
 // Toda leitura/escrita de dados do app passa por aqui. Por baixo dos panos
@@ -615,6 +805,31 @@ async function loadAllTargets(){
 async function getGroupGrandTotal(){
   const totals = await getJSON('prayer-totals', {});
   return Object.values(totals).reduce((a,b)=>a+b,0);
+}
+
+// Meta coletiva de oração do grupo: 1.000 horas, somando todo mundo.
+const META_ORACAO_MINUTOS = 1000 * 60;
+
+// Gera o HTML da barra de progresso da meta do grupo (total atual x quanto falta).
+function renderGoalProgressHtml(totalMinutes){
+  const pct = Math.min(100, (totalMinutes / META_ORACAO_MINUTOS) * 100);
+  const remaining = Math.max(0, META_ORACAO_MINUTOS - totalMinutes);
+  const reached = totalMinutes >= META_ORACAO_MINUTOS;
+  return `
+    <div class="goal-box">
+      <div class="goal-head">
+        <span class="goal-lbl">Meta do grupo: 1.000 horas de oração</span>
+        <span class="goal-pct">${pct.toFixed(1)}%</span>
+      </div>
+      <div class="goal-bar"><div class="goal-fill" style="width:${pct}%"></div></div>
+      <div class="goal-foot">
+        ${reached
+          ? `<span class="goal-done">🎉 Meta alcançada! Total orado pelo grupo: ${minToHM(totalMinutes)}</span>`
+          : `O grupo já orou <b>${minToHM(totalMinutes)}</b> juntos. Faltam <b>${minToHM(remaining)}</b> para chegar às 1.000 horas.`
+        }
+      </div>
+    </div>
+  `;
 }
 
 async function resetAllPrayerHours(){
@@ -1496,6 +1711,8 @@ function renderRegisterCard(){
       <h2>Cronômetro de Oração</h2>
       <p class="sub">Inicie o cronômetro enquanto ora, ou registre o tempo manualmente logo abaixo.</p>
 
+      <div id="goalBox"></div>
+
       <div class="group-total-box">
         <div class="lbl">Relógio total de todos</div>
         <div class="group-total-display" id="groupTotalDisplay">carregando...</div>
@@ -1544,6 +1761,14 @@ function renderRegisterCard(){
     }).catch(() => { groupTotalDisplay.textContent = '—'; });
   }
   refreshGroupTotal();
+
+  const goalBox = card.querySelector('#goalBox');
+  function refreshGoalBox(){
+    getGroupGrandTotal().then(total => {
+      goalBox.innerHTML = renderGoalProgressHtml(total);
+    }).catch(() => { goalBox.innerHTML = ''; });
+  }
+  refreshGoalBox();
 
   const display = card.querySelector('#timerDisplay');
   const startPauseBtn = card.querySelector('#startPauseBtn');
@@ -1604,6 +1829,7 @@ function renderRegisterCard(){
     const todayTotal = await addPrayerMinutes(state.name, minutes);
     msgEl.innerHTML = `<div class="msg ok">${minToHM(minutes)} registrados. Seu total de hoje: ${minToHM(todayTotal)}.</div>`;
     refreshGroupTotal();
+    refreshGoalBox();
   }
 
   return card;
@@ -1818,24 +2044,29 @@ function renderPanelCard(){
   loadDashboard(state.name).then(d => {
     const body = card.querySelector('#panelBody');
     body.innerHTML = `
-      <div class="stats-grid">
-        <div class="stat-box">
+      <div class="stats-grid cols-4">
+        <div class="stat-box" style="--stat-accent: var(--info)">
+          <div class="icon">${ICONS.users}</div>
           <div class="num">${minToHM(d.todayGroupTotal)}</div>
           <div class="lbl">Total do grupo hoje (${d.participantsToday} pessoa${d.participantsToday===1?'':'s'})</div>
         </div>
-        <div class="stat-box">
+        <div class="stat-box" style="--stat-accent: var(--accent)">
+          <div class="icon">${ICONS.clock}</div>
           <div class="num">${minToHM(d.yourToday)}</div>
           <div class="lbl">Seu total hoje</div>
         </div>
-        <div class="stat-box">
+        <div class="stat-box" style="--stat-accent: var(--violet)">
+          <div class="icon">${ICONS.star}</div>
           <div class="num">${minToHM(d.yourTotal)}</div>
           <div class="lbl">Seu total geral</div>
         </div>
-        <div class="stat-box">
+        <div class="stat-box" style="--stat-accent: var(--success)">
+          <div class="icon">${ICONS.target}</div>
           <div class="num">${minToHM(d.grandTotal)}</div>
           <div class="lbl">Total geral do grupo</div>
         </div>
       </div>
+      ${renderGoalProgressHtml(d.grandTotal)}
       <table>
         <thead><tr><th>Participante</th><th>Tempo total</th></tr></thead>
         <tbody>
@@ -1871,6 +2102,181 @@ function renderPanelCard(){
   });
 
   return card;
+}
+
+// Modal de ajuste de tempo de oração. Pensado pro caso comum de erro de
+// digitação (ex: alguém registrou 20h em vez de 20min): a aba padrão deixa
+// o obreiro dizer "o que foi lançado errado" e "qual era o valor certo",
+// e o app calcula sozinho o novo total. Quem preferir também pode digitar
+// o total final direto, na aba "Definir manualmente".
+function openAdjustTimeModal(name, currentMinutes){
+  return new Promise((resolve) => {
+    const overlay = el(`
+      <div class="modal-overlay">
+        <div class="modal-box">
+          <h3>Ajustar tempo — ${escapeHtml(name)}</h3>
+          <p class="sub">Tempo total atual: <b style="color:var(--accent-soft)">${minToHM(currentMinutes)}</b></p>
+
+          <div class="modal-tabs">
+            <button type="button" class="modal-tab active" data-tab="fix">Corrigir lançamento errado</button>
+            <button type="button" class="modal-tab" data-tab="manual">Definir total manualmente</button>
+          </div>
+
+          <div id="tabFix">
+            <p class="sub" style="margin:16px 0 8px">O que foi lançado <b>por engano</b>?</p>
+            <div class="hm-row">
+              <div><label>Horas</label><input type="number" id="wrongH" min="0" value="0" inputmode="numeric"></div>
+              <div><label>Minutos</label><input type="number" id="wrongM" min="0" max="59" value="0" inputmode="numeric"></div>
+            </div>
+            <p class="sub" style="margin:16px 0 8px">Qual era o valor <b>correto</b>?</p>
+            <div class="hm-row">
+              <div><label>Horas</label><input type="number" id="correctH" min="0" value="0" inputmode="numeric"></div>
+              <div><label>Minutos</label><input type="number" id="correctM" min="0" max="59" value="0" inputmode="numeric"></div>
+            </div>
+          </div>
+
+          <div id="tabManual" class="hidden">
+            <p class="sub" style="margin:16px 0 8px">Novo tempo total de oração</p>
+            <div class="hm-row">
+              <div><label>Horas</label><input type="number" id="manualH" min="0" value="${Math.floor(currentMinutes/60)}" inputmode="numeric"></div>
+              <div><label>Minutos</label><input type="number" id="manualM" min="0" max="59" value="${currentMinutes%60}" inputmode="numeric"></div>
+            </div>
+          </div>
+
+          <div class="modal-preview" id="adjustPreview">Novo total: <b>${minToHM(currentMinutes)}</b></div>
+          <div id="adjustMsg"></div>
+
+          <div class="modal-actions">
+            <button class="btn-ghost" id="adjustCancel">Cancelar</button>
+            <button class="btn-primary" id="adjustSave">Salvar</button>
+          </div>
+        </div>
+      </div>
+    `);
+    document.body.appendChild(overlay);
+
+    let mode = 'fix';
+    const tabFix = overlay.querySelector('#tabFix');
+    const tabManual = overlay.querySelector('#tabManual');
+    const preview = overlay.querySelector('#adjustPreview');
+    const msgEl = overlay.querySelector('#adjustMsg');
+
+    function computeNewTotal(){
+      if(mode === 'fix'){
+        const wrongH = Number(overlay.querySelector('#wrongH').value) || 0;
+        const wrongM = Number(overlay.querySelector('#wrongM').value) || 0;
+        const correctH = Number(overlay.querySelector('#correctH').value) || 0;
+        const correctM = Number(overlay.querySelector('#correctM').value) || 0;
+        const wrongTotal = wrongH*60 + wrongM;
+        const correctTotal = correctH*60 + correctM;
+        return { value: currentMinutes - wrongTotal + correctTotal, wrongTotal };
+      }
+      const manualH = Number(overlay.querySelector('#manualH').value) || 0;
+      const manualM = Number(overlay.querySelector('#manualM').value) || 0;
+      return { value: manualH*60 + manualM, wrongTotal: 0 };
+    }
+
+    function updatePreview(){
+      const { value, wrongTotal } = computeNewTotal();
+      if(mode === 'fix' && wrongTotal > currentMinutes){
+        preview.classList.add('is-warn');
+        preview.innerHTML = `O valor "lançado por engano" é maior que o total atual — confira os números.`;
+        return;
+      }
+      preview.classList.remove('is-warn');
+      preview.innerHTML = `Novo total: <b>${minToHM(Math.max(0, value))}</b>`;
+    }
+
+    overlay.querySelectorAll('.modal-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        mode = tab.dataset.tab;
+        overlay.querySelectorAll('.modal-tab').forEach(t => t.classList.toggle('active', t===tab));
+        tabFix.classList.toggle('hidden', mode !== 'fix');
+        tabManual.classList.toggle('hidden', mode !== 'manual');
+        updatePreview();
+      });
+    });
+
+    overlay.querySelectorAll('input[type=number]').forEach(inp => {
+      inp.addEventListener('input', updatePreview);
+    });
+
+    function close(result){
+      overlay.remove();
+      resolve(result);
+    }
+
+    overlay.querySelector('#adjustCancel').addEventListener('click', () => close(null));
+    overlay.addEventListener('click', (e) => { if(e.target === overlay) close(null); });
+
+    overlay.querySelector('#adjustSave').addEventListener('click', async () => {
+      const { value, wrongTotal } = computeNewTotal();
+      if(mode === 'fix' && wrongTotal > currentMinutes){
+        msgEl.innerHTML = `<div class="msg err">O valor lançado por engano não pode ser maior que o total atual. Confira os números.</div>`;
+        return;
+      }
+      const newTotal = Math.max(0, Math.round(value));
+      const saveBtn = overlay.querySelector('#adjustSave');
+      saveBtn.disabled = true; saveBtn.textContent = 'Salvando...';
+      await setPrayerTotal(name, newTotal);
+      close(newTotal);
+    });
+
+    overlay.querySelector('#wrongH').focus();
+  });
+}
+
+// Modal simples para o obreiro reatribuir uma pessoa a outro discipulador
+// (ex: quando ela muda de célula/grupo). Só mexe no mapa discipulador-map —
+// os alvos e o tempo de oração da pessoa continuam intactos.
+function openChangeDiscipuladorModal(name, currentDiscipulador){
+  return new Promise((resolve) => {
+    const overlay = el(`
+      <div class="modal-overlay">
+        <div class="modal-box">
+          <h3>Mudar discipulador — ${escapeHtml(name)}</h3>
+          <p class="sub">Escolha o discipulador responsável por acompanhar ${escapeHtml(name)} a partir de agora.</p>
+
+          <label>Novo discipulador</label>
+          <select id="newDiscipulador">
+            <option value="">Sem discipulador informado</option>
+            ${DISCIPULADORES.map(d => `<option value="${escapeHtml(d)}"${d===currentDiscipulador ? ' selected' : ''}>${escapeHtml(d)}</option>`).join('')}
+          </select>
+
+          <div id="changeDiscMsg"></div>
+
+          <div class="modal-actions">
+            <button class="btn-ghost" id="changeDiscCancel">Cancelar</button>
+            <button class="btn-primary" id="changeDiscSave">Salvar</button>
+          </div>
+        </div>
+      </div>
+    `);
+    document.body.appendChild(overlay);
+
+    function close(result){
+      overlay.remove();
+      resolve(result);
+    }
+
+    overlay.querySelector('#changeDiscCancel').addEventListener('click', () => close(null));
+    overlay.addEventListener('click', (e) => { if(e.target === overlay) close(null); });
+
+    overlay.querySelector('#changeDiscSave').addEventListener('click', async () => {
+      const select = overlay.querySelector('#newDiscipulador');
+      const newValue = select.value;
+      const msgEl = overlay.querySelector('#changeDiscMsg');
+      const saveBtn = overlay.querySelector('#changeDiscSave');
+      saveBtn.disabled = true; saveBtn.textContent = 'Salvando...';
+      const ok = await saveDiscipuladorMap(name, newValue);
+      if(ok === false){
+        saveBtn.disabled = false; saveBtn.textContent = 'Salvar';
+        msgEl.innerHTML = `<div class="msg err">Não foi possível salvar agora. Tente novamente.</div>`;
+        return;
+      }
+      close(newValue);
+    });
+  });
 }
 
 function renderAdminPanel(){
@@ -1946,44 +2352,62 @@ function renderAdminPanel(){
 
     const body = card.querySelector('#adminBody');
     body.innerHTML = `
-      <div class="stats-grid">
-        <div class="stat-box">
+      <div class="stats-grid cols-4">
+        <div class="stat-box" style="--stat-accent: var(--info)">
+          <div class="icon">${ICONS.users}</div>
           <div class="num">${people.length}</div>
           <div class="lbl">Pessoas (nesta seleção)</div>
         </div>
-        <div class="stat-box">
+        <div class="stat-box" style="--stat-accent: var(--accent)">
+          <div class="icon">${ICONS.clock}</div>
           <div class="num">${minToHM(filteredMinutes)}</div>
           <div class="lbl">Tempo total de oração</div>
         </div>
-        <div class="stat-box">
+        <div class="stat-box" style="--stat-accent: var(--violet)">
+          <div class="icon">${ICONS.target}</div>
           <div class="num">${filteredTargets}</div>
           <div class="lbl">Alvos cadastrados</div>
         </div>
-        <div class="stat-box">
+        <div class="stat-box" style="--stat-accent: var(--success)">
+          <div class="icon">${ICONS.star}</div>
           <div class="num">${filteredAchievements}</div>
           <div class="lbl">Conquistas publicadas</div>
         </div>
       </div>
 
       ${people.map(p => `
-        <div class="target-group" style="border:1px solid var(--border); border-radius:var(--radius-sm); padding:16px 18px; margin-bottom:14px; background: var(--bg-panel-2); transition: border-color 0.2s;">
-          <h3 style="display:flex; justify-content:space-between; align-items:center; margin-bottom:2px;">
-            <span>${escapeHtml(p.name)}</span>
-            <span style="font-size:12px; color:var(--text-muted); font-weight:500;">${minToHM(p.totalMinutes)} · ${p.achievementsCount} conquista${p.achievementsCount===1?'':'s'}</span>
-          </h3>
-          <p class="sub" style="margin:0 0 10px; display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap;">
-            <span>${p.discipulador ? escapeHtml(p.discipulador) : 'Sem discipulador informado'}</span>
-            <span style="display:flex; gap:6px; flex-wrap:wrap;">
-              <button class="btn-ghost btn-small" data-adjust="${escapeHtml(p.name)}">Ajustar tempo</button>
-              <button class="btn-ghost btn-small" data-reset="${escapeHtml(p.name)}">Resetar senha</button>
-            </span>
-          </p>
-          <p class="sub" style="margin:0 0 2px; font-size:12px;">Pessoas</p>
-          ${targetsHtml(p.pessoas, 'pessoa')}
-          <p class="sub" style="margin:10px 0 2px; font-size:12px;">Conquista</p>
-          ${targetsHtml(p.conquista, 'conquista')}
-          <p class="sub" style="margin:10px 0 2px; font-size:12px;">Ovelha Perdida</p>
-          ${targetsHtml(p.ovelhaPerdida, 'perdido')}
+        <div class="person-card">
+          <div class="person-head">
+            <div class="person-avatar">${initials(p.name)}</div>
+            <div class="person-info">
+              <div class="name">${escapeHtml(p.name)}</div>
+              <div class="person-meta">
+                <span class="disc-badge${p.discipulador ? '' : ' is-empty'}">${p.discipulador ? escapeHtml(p.discipulador) : 'Sem discipulador'}</span>
+                <span class="person-stat">${ICONS.clock}${minToHM(p.totalMinutes)}</span>
+                <span class="person-stat">${ICONS.star}${p.achievementsCount} conquista${p.achievementsCount===1?'':'s'}</span>
+              </div>
+            </div>
+          </div>
+          <div class="person-toolbar">
+            <button class="btn-ghost btn-small icon-btn" data-adjust="${escapeHtml(p.name)}">${ICONS.edit}Ajustar tempo</button>
+            ${scope ? '' : `<button class="btn-ghost btn-small icon-btn" data-changedisc="${escapeHtml(p.name)}">${ICONS.swap}Discipulador</button>`}
+            <button class="btn-ghost btn-small icon-btn" data-reset="${escapeHtml(p.name)}">${ICONS.key}Resetar senha</button>
+          </div>
+          <details class="person-targets">
+            <summary>Ver alvos de oração</summary>
+            <div class="target-cat">
+              <p class="cat-lbl">Pessoas</p>
+              ${targetsHtml(p.pessoas, 'pessoa')}
+            </div>
+            <div class="target-cat">
+              <p class="cat-lbl">Conquista</p>
+              ${targetsHtml(p.conquista, 'conquista')}
+            </div>
+            <div class="target-cat">
+              <p class="cat-lbl">Ovelha Perdida</p>
+              ${targetsHtml(p.ovelhaPerdida, 'perdido')}
+            </div>
+          </details>
         </div>
       `).join('') || '<p class="sub">Ninguém encontrado com esse filtro.</p>'}
     `;
@@ -1993,15 +2417,20 @@ function renderAdminPanel(){
         const name = btn.dataset.adjust;
         const person = people.find(p => p.name === name);
         const current = person ? person.totalMinutes : 0;
-        const input = prompt(`Novo tempo TOTAL de oração de ${name} (em minutos).\nAtual: ${minToHM(current)} (${current} min).\n\nDigite o valor correto em minutos:`, String(current));
-        if(input === null) return; // cancelado
-        const newMinutes = Number(input);
-        if(!Number.isFinite(newMinutes) || newMinutes < 0){
-          alert('Digite um número válido de minutos (0 ou mais).');
-          return;
-        }
-        btn.disabled = true; btn.textContent = 'Salvando...';
-        await setPrayerTotal(name, newMinutes);
+        const result = await openAdjustTimeModal(name, current);
+        if(result === null) return; // cancelado
+        overview = await loadAdminOverview();
+        renderBody();
+      });
+    });
+
+    body.querySelectorAll('[data-changedisc]').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const name = btn.dataset.changedisc;
+        const person = people.find(p => p.name === name);
+        const current = person ? person.discipulador : '';
+        const result = await openChangeDiscipuladorModal(name, current);
+        if(result === null) return; // cancelado
         overview = await loadAdminOverview();
         renderBody();
       });
