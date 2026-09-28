@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
@@ -802,6 +802,100 @@ async function loadAllTargets(){
   return items.filter(Boolean).sort((a,b) => a.name.localeCompare(b.name, 'pt-BR'));
 }
 
+// ---- Batismo ----
+async function loadBaptisms(name){
+  return await getJSON('baptisms:'+slugKey(name), []);
+}
+async function saveBaptisms(name, list){
+  const ok = await setJSON('baptisms:'+slugKey(name), list);
+  if(ok){
+    const index = await getJSON('baptisms-index', []);
+    if(!index.includes(name)){
+      index.push(name);
+      await setJSON('baptisms-index', index);
+    }
+  }
+  return ok;
+}
+async function loadAllBaptisms(){
+  const names = await getJSON('baptisms-index', []);
+  const discMap = await getJSON('discipulador-map', {});
+  return Promise.all(names.map(async n => ({
+    name: n,
+    discipulador: discMap[n] || '',
+    lista: await getJSON('baptisms:'+slugKey(n), [])
+  })));
+}
+
+const BAPTISM_STATUS = {
+  enviado:  { label: 'Desafio enviado',   next: 'aceitou',  nextLabel: 'Aceitou o desafio',    prev: null },
+  aceitou:  { label: 'Aceitou o desafio', next: 'batizado', nextLabel: 'Batizado com sucesso', prev: 'enviado' },
+  batizado: { label: 'Batizado 🎉',       next: null,       nextLabel: '',                     prev: 'aceitou' }
+};
+function bapStatus(b){ return (b.status && BAPTISM_STATUS[b.status]) ? b.status : 'enviado'; }
+
+function buildBaptismStats(items){
+  const all = [];
+  items.forEach(it => (it.lista || []).forEach(b => all.push({
+    ...b, status: bapStatus(b), rede: it.discipulador || 'Sem discipulador'
+  })));
+  const count = s => all.filter(b => b.status === s).length;
+  const batizados = all.filter(b => b.status === 'batizado')
+    .sort((a,b) => (b.dateBatizado || '').localeCompare(a.dateBatizado || ''));
+  const leaders = {};
+  batizados.forEach(b => {
+    const k = slugKey(b.lider);
+    if(!leaders[k]) leaders[k] = { nome: b.lider, total: 0 };
+    leaders[k].total++;
+  });
+  const ranking = Object.values(leaders).sort((a,b) => b.total - a.total);
+  return { total: all.length, enviados: count('enviado'), aceitaram: count('aceitou'), batizados, ranking };
+}
+
+function renderBaptismSummaryHtml(s){
+  const box = (accent, icon, num, lbl) => `
+    <div class="stat-box" style="--stat-accent: var(--${accent})">
+      <div class="icon">${ICONS[icon]}</div>
+      <div class="num">${num}</div>
+      <div class="lbl">${lbl}</div>
+    </div>`;
+  return `
+    <div class="stats-grid cols-4">
+      ${box('info','target',s.total,'Alvos de batismo')}
+      ${box('accent','edit',s.enviados,'Desafio enviado')}
+      ${box('violet','users',s.aceitaram,'Aceitaram o desafio')}
+      ${box('success','star',s.batizados.length,'Batizados')}
+    </div>
+    <div class="target-group">
+      <h3>Batizados (${s.batizados.length})</h3>
+      <table>
+        <thead><tr><th>Nome</th><th>Rede</th><th>Líder</th></tr></thead>
+        <tbody>
+          ${s.batizados.map(b => `
+            <tr>
+              <td>${escapeHtml(b.nome)}${b.dateBatizado ? `<br><span style="color:var(--text-muted); font-size:11px;">${fmtDate(b.dateBatizado)}</span>` : ''}</td>
+              <td style="font-size:12.5px">${escapeHtml(b.rede)}</td>
+              <td style="font-size:12.5px">${escapeHtml(b.lider)}</td>
+            </tr>`).join('') || '<tr><td colspan="3">Ainda não há batizados registrados.</td></tr>'}
+        </tbody>
+      </table>
+    </div>
+    <div class="target-group">
+      <h3>Líderes que mais batizaram</h3>
+      <table>
+        <thead><tr><th>Líder</th><th>Batizados</th></tr></thead>
+        <tbody>
+          ${s.ranking.map((r, i) => `
+            <tr>
+              <td class="${i===0 ? 'rank-you' : 'rank-name'}">${i===0 ? '🏆 ' : ''}${escapeHtml(r.nome)}</td>
+              <td>${r.total}</td>
+            </tr>`).join('') || '<tr><td colspan="2">Ainda não há dados.</td></tr>'}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
 async function getGroupGrandTotal(){
   const totals = await getJSON('prayer-totals', {});
   return Object.values(totals).reduce((a,b)=>a+b,0);
@@ -943,13 +1037,18 @@ async function loadAdminOverview(){
   const targetItems = await loadAllTargets();
   const achievements = await loadAchievements(9999);
 
+  const baptismItems = await loadAllBaptisms();
+  const baptismsByName = {};
+  baptismItems.forEach(b => { baptismsByName[b.name] = b.lista; });
+
   const achievementCounts = {};
   achievements.forEach(a => { achievementCounts[a.name] = (achievementCounts[a.name]||0) + 1; });
 
   const namesSet = new Set([
     ...Object.keys(totals),
     ...Object.keys(discipuladorMap),
-    ...targetItems.map(t => t.name)
+    ...targetItems.map(t => t.name),
+    ...baptismItems.map(b => b.name)
   ]);
 
   const targetsByName = {};
@@ -964,7 +1063,8 @@ async function loadAdminOverview(){
       achievementsCount: achievementCounts[name] || 0,
       pessoas: t.pessoas || [],
       conquista: t.conquista || [],
-      ovelhaPerdida: t.ovelhaPerdida || []
+      ovelhaPerdida: t.ovelhaPerdida || [],
+      batismos: baptismsByName[name] || []
     };
   }).sort((a,b) => b.totalMinutes - a.totalMinutes);
 
@@ -972,7 +1072,7 @@ async function loadAdminOverview(){
   let totalTargets = 0;
   people.forEach(p => { totalTargets += p.pessoas.length + p.conquista.length + p.ovelhaPerdida.length; });
 
-  return { people, grandTotal, totalTargets, totalAchievements: achievements.length };
+  return { people, grandTotal, totalTargets, totalAchievements: achievements.length, baptismItems };
 }
 
 const app = document.getElementById('app');
@@ -1194,6 +1294,7 @@ function renderApp(){
       <button data-tab="alvos">Meus Alvos</button>
       <button data-tab="registrar">Registrar Oração</button>
       <button data-tab="conquistas">Conquistas</button>
+      <button data-tab="batismo">Batismo</button>
       <button data-tab="todosalvos">Todos os Alvos</button>
       <button data-tab="painel">Painel Geral</button>
     </nav>
@@ -1207,6 +1308,7 @@ function renderApp(){
   if(state.activeTab === 'alvos') container.appendChild(renderTargetsCard());
   if(state.activeTab === 'registrar') container.appendChild(renderRegisterCard());
   if(state.activeTab === 'conquistas') container.appendChild(renderAchievementsCard());
+  if(state.activeTab === 'batismo') container.appendChild(renderBaptismCard());
   if(state.activeTab === 'todosalvos') container.appendChild(renderAllTargetsCard());
   if(state.activeTab === 'painel') container.appendChild(renderPanelCard());
 
@@ -1957,6 +2059,130 @@ function renderAchievementsCard(){
   return card;
 }
 
+function renderBaptismCard(){
+  const card = el(`
+    <div class="card">
+      <h2>Painel de Batismo</h2>
+      <p class="sub">Cadastre os alvos que você quer levar ao batismo e acompanhe cada etapa.${state.discipulador ? ` Seu discipulador (<b>${escapeHtml(state.discipulador)}</b>) já fica vinculado automaticamente.` : ''}</p>
+      <label>Nome de quem será batizado</label>
+      <input type="text" id="bapNome" placeholder="Nome da pessoa" style="margin-bottom:12px" />
+      <label>Quem vai levar para o batismo</label>
+      <input type="text" id="bapLevaPor" placeholder="Nome de quem vai levar" style="margin-bottom:12px" />
+      <label>Nome do líder</label>
+      <input type="text" id="bapLider" placeholder="Nome do líder" />
+      <div style="margin-top:16px"><button class="btn-primary" id="bapAddBtn">Adicionar alvo de batismo</button></div>
+      <div id="bapMsg"></div>
+      <div class="divider-text">meus alvos de batismo</div>
+      <div id="bapList"><div class="loading">Carregando...</div></div>
+      <div class="divider-text">resultado geral de batismos</div>
+      <div id="bapSummary"><div class="loading">Carregando resumo...</div></div>
+    </div>
+  `);
+
+  let list = [];
+  const listEl = card.querySelector('#bapList');
+  const msgEl = card.querySelector('#bapMsg');
+  const summaryEl = card.querySelector('#bapSummary');
+
+  function refreshSummary(){
+    loadAllBaptisms().then(items => {
+      summaryEl.innerHTML = renderBaptismSummaryHtml(buildBaptismStats(items));
+    }).catch(() => {
+      summaryEl.innerHTML = `<div class="msg err">Não foi possível carregar o resumo agora.</div>`;
+    });
+  }
+
+  function renderList(){
+    if(!list.length){
+      listEl.innerHTML = `<p class="sub" style="margin:0">Nenhum alvo de batismo cadastrado ainda.</p>`;
+      return;
+    }
+    listEl.innerHTML = list.map(b => {
+      const st = bapStatus(b);
+      const cfg = BAPTISM_STATUS[st];
+      const badgeStyle = st === 'batizado' ? 'background:rgba(138,182,146,0.15); color:var(--success); border-color:rgba(138,182,146,0.35);' : '';
+      return `
+        <div class="person-card">
+          <div class="person-head">
+            <div class="person-avatar">${initials(b.nome)}</div>
+            <div class="person-info">
+              <div class="name">${escapeHtml(b.nome)}</div>
+              <div class="person-meta">
+                <span class="disc-badge" style="${badgeStyle}">${cfg.label}</span>
+                <span class="person-stat">Levado por: ${escapeHtml(b.levadoPor)}</span>
+                <span class="person-stat">Líder: ${escapeHtml(b.lider)}</span>
+              </div>
+            </div>
+            <button class="btn-ghost btn-small" data-bapremove="${escapeHtml(b.id)}">remover</button>
+          </div>
+          <div class="person-toolbar">
+            ${cfg.next ? `<button class="btn-primary btn-small" data-bapnext="${escapeHtml(b.id)}">${cfg.nextLabel}</button>` : ''}
+            ${cfg.prev ? `<button class="btn-ghost btn-small" data-bapprev="${escapeHtml(b.id)}">Voltar status</button>` : ''}
+          </div>
+        </div>`;
+    }).join('');
+  }
+
+  loadBaptisms(state.name).then(l => { list = l || []; renderList(); })
+    .catch(() => { listEl.innerHTML = `<div class="msg err">Não foi possível carregar agora.</div>`; });
+  refreshSummary();
+
+  card.querySelector('#bapAddBtn').addEventListener('click', async () => {
+    const nome = card.querySelector('#bapNome').value.trim();
+    const levadoPor = card.querySelector('#bapLevaPor').value.trim();
+    const lider = card.querySelector('#bapLider').value.trim();
+    if(!nome || !levadoPor || !lider){
+      msgEl.innerHTML = `<div class="msg err">Preencha os três campos: quem será batizado, quem vai levar e o líder.</div>`;
+      return;
+    }
+    const btn = card.querySelector('#bapAddBtn');
+    btn.disabled = true; btn.textContent = 'Salvando...';
+    const novaLista = [...list, { id: Date.now() + '-' + Math.random().toString(36).slice(2,6), nome, levadoPor, lider, status: 'enviado', date: todayStr() }];
+    const ok = await saveBaptisms(state.name, novaLista);
+    btn.disabled = false; btn.textContent = 'Adicionar alvo de batismo';
+    if(ok){
+      list = novaLista;
+      ['#bapNome','#bapLevaPor','#bapLider'].forEach(s => { card.querySelector(s).value = ''; });
+      msgEl.innerHTML = `<div class="msg ok">Alvo de batismo adicionado.</div>`;
+      renderList(); refreshSummary();
+    } else {
+      msgEl.innerHTML = `<div class="msg err">Não foi possível salvar agora. Verifique sua internet e tente novamente.</div>`;
+    }
+  });
+
+  async function changeStatus(id, direction){
+    const item = list.find(b => b.id === id);
+    if(!item) return;
+    const target = BAPTISM_STATUS[bapStatus(item)][direction];
+    if(!target) return;
+    if(target === 'batizado' && !confirm(`Confirmar que ${item.nome} foi batizado(a)?`)) return;
+    const updated = { ...item, status: target };
+    if(target === 'aceitou') updated.dateAceitou = item.dateAceitou || todayStr();
+    if(target === 'batizado') updated.dateBatizado = todayStr();
+    if(target === 'enviado') delete updated.dateAceitou;
+    if(target !== 'batizado') delete updated.dateBatizado;
+    const novaLista = list.map(b => b.id === id ? updated : b);
+    const ok = await saveBaptisms(state.name, novaLista);
+    if(ok){ list = novaLista; msgEl.innerHTML = ''; renderList(); refreshSummary(); }
+    else { msgEl.innerHTML = `<div class="msg err">Não foi possível atualizar agora. Tente novamente.</div>`; }
+  }
+
+  listEl.addEventListener('click', async (e) => {
+    const { bapnext, bapprev, bapremove } = e.target.dataset;
+    if(bapnext){ await changeStatus(bapnext, 'next'); return; }
+    if(bapprev){ await changeStatus(bapprev, 'prev'); return; }
+    if(bapremove){
+      if(!confirm('Remover este alvo de batismo?')) return;
+      const novaLista = list.filter(b => b.id !== bapremove);
+      const ok = await saveBaptisms(state.name, novaLista);
+      if(ok){ list = novaLista; renderList(); refreshSummary(); }
+      else { msgEl.innerHTML = `<div class="msg err">Não foi possível remover agora. Tente novamente.</div>`; }
+    }
+  });
+
+  return card;
+}
+
 function renderAllTargetsCard(){
   const card = el(`
     <div class="card">
@@ -2375,6 +2601,11 @@ function renderAdminPanel(){
         </div>
       </div>
 
+      <div class="target-group" style="margin-top:6px">
+        <h3>Batismos (nesta seleção)</h3>
+        ${renderBaptismSummaryHtml(buildBaptismStats(overview.baptismItems.filter(i => people.some(p => p.name === i.name))))}
+      </div>
+
       ${people.map(p => `
         <div class="person-card">
           <div class="person-head">
@@ -2407,6 +2638,14 @@ function renderAdminPanel(){
               <p class="cat-lbl">Ovelha Perdida</p>
               ${targetsHtml(p.ovelhaPerdida, 'perdido')}
             </div>
+          </details>
+          <details class="person-targets">
+            <summary>Ver alvos de batismo (${p.batismos.length})</summary>
+            ${p.batismos.map(b => `
+              <div class="target-cat">
+                <p class="cat-lbl">${escapeHtml(b.nome)}</p>
+                <span style="color:var(--text-muted); font-size:12px;">${BAPTISM_STATUS[bapStatus(b)].label} · Levado por: ${escapeHtml(b.levadoPor)} · Líder: ${escapeHtml(b.lider)}</span>
+              </div>`).join('') || '<span style="color:var(--text-muted); font-size:12px;">Nenhum alvo de batismo.</span>'}
           </details>
         </div>
       `).join('') || '<p class="sub">Ninguém encontrado com esse filtro.</p>'}
